@@ -21,9 +21,121 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnonymousUser'
+  /auth/token/access:
+    post:
+      operationId: transformCode
+      summary: Transform a temporary code to a access_token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TransformCode'
+      responses:
+        '200':
+          description: connected User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+  /users/{id_user}/token:
+    post:
+      operationId: createUserToken
+      summary: Create an access_token for this user and get it.
+      security:
+        - Authorization:     []
+      parameters:
+        - in: path
+          name: id_user
+          required: true
+          description: The user ID
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                application:
+                  type: string
+
+  /users/{id_user}:
+    delete:
+      operationId: deleteUser
+      summary: delete a User
+      security:
+        - Authorization:     []
+      parameters:
+        - in: path
+          name: id_user
+          required: true
+          description: The user ID
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: deleted User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users:
+    get:
+      operationId: getUsers
+      summary: get a list of Users
+      security:
+        - Authorization:     []
+      responses:
+        '200':
+          description: list of Users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersList'
 
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        signin:
+          type: string
+        platform:
+          type: string
+
+    UsersList:
+      type: object
+      properties:
+        total:
+          type: integer
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    TransformCode:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          default: authorization_code
+        client_id:
+          type: string
+        code:
+          type: string
+        client_secret:
+          type: string
+        redirect_uri:
+          type: string
+    AccessToken:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
     AnonymousUser:
       type: object
       example:
