@@ -37,10 +37,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AccessToken'
-  /users/{id_user}/token:
-    post:
-      operationId: createUserToken
-      summary: Create an access_token for this user and get it.
+
+  /users/{id_user}:
+    get:
+      operationId: getUser
+      summary: get a User
       security:
         - Authorization:     []
       parameters:
@@ -50,16 +51,14 @@ paths:
           description: The user ID
           schema:
             type: integer
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                application:
-                  type: string
 
-  /users/{id_user}:
+      responses:
+        '200':
+          description: the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
     delete:
       operationId: deleteUser
       summary: delete a User
