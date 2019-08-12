@@ -38,6 +38,51 @@ paths:
               schema:
                 $ref: '#/components/schemas/AccessToken'
 
+  /users/{id_user}/connections/{id_connection}/accounts:
+    get:
+      operationId: getConnectionAccounts
+      summary: get user accounts for a connection
+      security:
+        - Authorization:     []
+      parameters:
+        - in: path
+          name: id_user
+          description: The user ID
+          schema:
+            type: string
+        - in: path
+          name: id_connection
+          description: The connection ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountsList'
+
+  /users/{id_user}/connections:
+    get:
+      operationId: getConnections
+      summary: get user connections
+      security:
+        - Authorization:     []
+      parameters:
+        - in: path
+          name: id_user
+          description: The user ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionList'
+
   /users/{id_user}:
     get:
       operationId: getUser
@@ -51,7 +96,6 @@ paths:
           description: The user ID
           schema:
             type: integer
-
       responses:
         '200':
           description: the user
@@ -59,6 +103,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+
     delete:
       operationId: deleteUser
       summary: delete a User
@@ -93,8 +138,281 @@ paths:
               schema:
                 $ref: '#/components/schemas/UsersList'
 
+  /banks:
+    get:
+      operationId: getBanks
+      summary: get a list of Banks
+      security:
+        - Authorization:     []
+      responses:
+        '200':
+          description: list of Banks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BanksList'
+  /users/{id_user}/connections/{id_connection}/accounts/{id_account}/transactions:
+    get:
+      operationId: getTransactions
+      summary: get transactions for an account
+      security:
+        - Authorization:     []
+      parameters:
+        - in: path
+          name: id_user
+          required: true
+          description: The user ID
+          schema:
+            type: string
+        - in: path
+          name: id_connection
+          required: true
+          description: The connection ID
+          schema:
+            type: integer
+        - in: path
+          name: id_account
+          required: true
+          description: The account ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: list of Transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsList'
+
 components:
   schemas:
+    TransactionsList:
+      type: object
+      properties:
+        total:
+          type: integer
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+    Transaction:
+      type: object
+      required:
+        - id
+        - id_account
+      properties:
+        id:
+          type: integer
+        id_account:
+          type: integer
+        webid:
+          type: string
+        application_date:
+          type: date
+        date:
+          type: date
+        value:
+          type: number
+          format: float
+        gross_value:
+          type: number
+          format: float
+        nature:
+          type: string
+        original_wording:
+          type: string
+        simplified_wording:
+          type: string
+        stemmed_wording:
+          type: string
+        wording:
+          type: string
+        id_category:
+          type: integer
+        state:
+          type: string
+        date_scraped:
+          type: date-time
+        rdate:
+          type: date
+        vdate:
+          type: string
+        bdate:
+          type: string
+        coming:
+          type: boolean
+        active:
+          type: boolean
+        id_cluster:
+          type: integer
+        comment:
+          type: string
+        last_update:
+          type: date-time
+        deleted:
+          type: date-time
+        original_value:
+          type: number
+          format: float
+        original_currency:
+          type: string
+        commission:
+          type: number
+          format: float
+        commission_currency:
+          type: string
+        country:
+          type: string
+        counterparty:
+          type: string
+        card:
+          type: string
+    BanksList:
+      type: object
+      properties:
+        total:
+          type: integer
+        banks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bank'
+    Bank:
+      type: object
+      required:
+        - id
+        - name
+        - charged
+        - required
+        - uuid
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        id_weboob:
+          type: string
+        hidden:
+          type: boolean
+        charged:
+          type: boolean
+        code:
+          type: string
+        beta:
+          type: boolean
+        color:
+          type: string
+        slug:
+          type: string
+        sync_frequency:
+          type: number
+          format: float
+        months_to_fetch:
+          type: integer
+        auth_mechanism:
+          type: string
+        siret:
+          type: string
+        uuid:
+          type: string
+    AccountsList:
+      type: object
+      properties:
+        total:
+          type: integer
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+    Account:
+      type: object
+      required:
+        - id
+        - original_name
+        - balance
+        - bookmarked
+      properties:
+        id:
+          type: integer
+        id_connection:
+          type: integer
+        id_user:
+          type: integer
+        id_parent:
+          type: integer
+        number:
+          type: string
+        webid:
+          type: string
+        original_name:
+          type:  string
+        balance:
+          type: number
+          format: float
+        coming:
+          type: number
+          format: float
+        display:
+          type: boolean
+        last_update:
+          type: date-time
+        deleted:
+          type: date-time
+        disabled:
+          type: date-time
+        iban:
+          type: string
+        currency:
+          type: string
+        id_type:
+          type: integer
+        bookmarked:
+          type: integer
+        name:
+          type: string
+        error:
+          type: string
+        usage:
+          type: string
+        ownership:
+          type: string
+
+    ConnectionList:
+      type: object
+      properties:
+        total:
+          type: integer
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Connection'
+    Connection:
+      type: object
+      properties:
+        connector_uuid:
+          type: string
+          format: uuid
+        id:
+          type: integer
+        id_user:
+          type: integer
+        id_bank:
+          type: integer
+        error_message:
+          type: string
+        id_connector:
+          type: integer
+        last_update:
+          type: date-time
+        error:
+          type: string
+        expire:
+          type: date-time
+        active:
+          type: boolean
+        last_push:
+          type: date-time
+        next_try:
+          type: date-time
     User:
       type: object
       properties:
