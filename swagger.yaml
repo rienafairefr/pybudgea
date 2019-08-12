@@ -1,0 +1,53 @@
+openapi: 3.0.0
+servers:
+  - description: Budget Insight API
+    url: https://demo.biapi.pro/v2
+info:
+  description: see https://www.budget-insight.com/budgea-api
+  version: "1.0.0"
+  title: Budget Insight API
+paths:
+  /auth/init:
+    post:
+      operationId: createAnonymouseUser
+      summary: Create a new anonymous user
+      security:
+        - ClientId:     []
+          ClientSecret: []
+      responses:
+        '200':
+          description: created User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnonymousUser'
+
+components:
+  schemas:
+    AnonymousUser:
+      type: object
+      example:
+        expires_in: 0
+        auth_token: "string"
+        type: "string"
+      properties:
+        expires_in:
+          type: integer
+        auth_token:
+          type: string
+        type:
+          type: string
+
+  securitySchemes:
+    ClientId:
+      type: apiKey
+      in: query
+      name: client_id
+    ClientSecret:
+      type: apiKey
+      in: query
+      name: client_secret
+    Authorization:
+      type: apiKey
+      in: header
+      name: authorization
