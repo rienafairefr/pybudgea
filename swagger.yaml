@@ -208,9 +208,11 @@ components:
         webid:
           type: string
         application_date:
-          type: date
+          type: string
+          format: date
         date:
-          type: date
+          type: string
+          format: date
         value:
           type: number
           format: float
@@ -232,13 +234,17 @@ components:
         state:
           type: string
         date_scraped:
-          type: date-time
+          type: string
+          format: date-time
         rdate:
-          type: date
+          type: string
+          format: date
         vdate:
           type: string
+          format: date
         bdate:
           type: string
+          format: date
         coming:
           type: boolean
         active:
@@ -248,9 +254,11 @@ components:
         comment:
           type: string
         last_update:
-          type: date-time
+          type: string
+          format: date-time
         deleted:
-          type: date-time
+          type: string
+          format: date-time
         original_value:
           type: number
           format: float
@@ -354,11 +362,14 @@ components:
         display:
           type: boolean
         last_update:
-          type: date-time
+          type: string
+          format: date-time
         deleted:
-          type: date-time
+          type: string
+          format: date-time
         disabled:
-          type: date-time
+          type: string
+          format: date-time
         iban:
           type: string
         currency:
@@ -402,17 +413,21 @@ components:
         id_connector:
           type: integer
         last_update:
-          type: date-time
+          type: string
+          format: date-time
         error:
           type: string
         expire:
-          type: date-time
+          type: string
+          format: date-time
         active:
           type: boolean
         last_push:
-          type: date-time
+          type: string
+          format: date-time
         next_try:
-          type: date-time
+          type: string
+          format: date-time
     User:
       type: object
       properties:
