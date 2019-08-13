@@ -4,5 +4,5 @@
 # pybudgea
 Library to connnect to Budgea banking API (budgea.com)
 
-The swagger spec is manually written, endpoints or schemas might be incomplete
+The swagger spec is OpenApi 3 converted from the official OpenApi version 2 spec, endpoints or schemas might be wrong or incomplete
  

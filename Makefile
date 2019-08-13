@@ -27,6 +27,14 @@ test:
 clean:
 	rm -rf api
 
+2to3:
+	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
+	           generate -i /local/swagger.json \
+	           -g openapi-yaml -o /local/openapi-yaml
+	cp openapi-yaml/openapi/openapi.yaml swagger.yaml
+	rm -rf openapi-yaml
+	pipenv run python patch_yaml.py
+
 api: swagger.yaml Makefile
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
 	           generate -i /local/swagger.yaml \
