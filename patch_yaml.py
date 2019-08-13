@@ -16,7 +16,7 @@ def nested_set(dic, keys, value):
     dic[keys[-1]] = value
 
 
-with open('swagger.yaml', 'r') as swagger_yaml:
+with open('openapi.yaml', 'r') as swagger_yaml:
     swagger = yaml.load(swagger_yaml, Loader=yaml.SafeLoader)
 
     remapped_get = {
@@ -81,5 +81,5 @@ with open('swagger.yaml', 'r') as swagger_yaml:
         }
     }
 
-with open('swagger.yaml', 'w') as swagger_yaml:
+with open('openapi.yaml', 'w') as swagger_yaml:
     yaml.dump(swagger, swagger_yaml)

@@ -73,4 +73,4 @@ api/*/
 .env
 .openapi-generator-ignore
 
-swagger\.yaml
+openapi\.yaml

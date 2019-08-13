@@ -26,21 +26,19 @@ test:
 
 clean:
 	rm -rf api
-	rm swagger.yaml
+	rm -f openapi.yaml
 
-2to3:
+openapi.yaml: swagger.json
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
 	           generate -i /local/swagger.json \
 	           -g openapi-yaml -o /local/openapi-yaml
-	cp openapi-yaml/openapi/openapi.yaml swagger.yaml
+	cp openapi-yaml/openapi/openapi.yaml openapi.yaml
 	rm -rf openapi-yaml
-
-patch:
 	pipenv run python patch_yaml.py
 
-api: swagger.yaml Makefile
+api: openapi.yaml Makefile
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
-	           generate -i /local/swagger.yaml \
+	           generate -i /local/openapi.yaml \
 	           --git-user-id rienafairefr \
 	           --git-repo-id pybudgea \
 	           -g python -o /local/api -DprojectName=pybudgea -DpackageName=budgea \
