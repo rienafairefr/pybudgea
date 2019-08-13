@@ -39,12 +39,20 @@ with open('swagger.yaml', 'r') as swagger_yaml:
 
     def treat_node(stack, node):
         print(stack)
-        if node.get('name') == 'expand':
-            node['required'] = False
+        if 'parameters' in node:
+            parameters = node['parameters']
+            for param in parameters:
+                if param['name'] == 'expand':
+                    param['required'] = False
+            pass
         remapped_ref = remap.get(node.get('$ref'))
         if remapped_ref is not None:
             node['$ref'] = remapped_ref
-        if len(stack) == 3 and stack[0] == 'paths':
+        if 'required' in node and isinstance(node['required'], list):
+            if 'id_weboob' in node['required']:
+                node['required'].remove('id_weboob')
+
+        if len(stack) == 2 and stack[0] == 'paths':
             node['security'] = [
                 {'Authorization': []}
             ]
@@ -69,7 +77,7 @@ with open('swagger.yaml', 'r') as swagger_yaml:
         'Authorization': {
             'type': 'apiKey',
             'in': 'header',
-            'name': 'authorization',
+            'name': 'Authorization',
         }
     }
 
