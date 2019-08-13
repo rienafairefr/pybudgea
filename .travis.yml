@@ -14,11 +14,10 @@ python:
 - 3.4
 - 2.7
 install:
-- pip install tox tox-travis twine
-- pip install --upgrade setuptools
+- pip install --user pipenv
 - make api
 script:
-- tox --workdir api
+- pipenv run tox --workdir api
 after_success:
 - make deploy_pypi
 deploy:
