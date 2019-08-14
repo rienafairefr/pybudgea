@@ -74,3 +74,4 @@ api/*/
 .openapi-generator-ignore
 
 openapi\.yaml
+Pipfile.lock
