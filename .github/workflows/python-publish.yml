@@ -1,0 +1,39 @@
+name: Publish Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [2.7, 3.5]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: dschep/install-pipenv-action@v1
+    - name: Install dependencies
+      run: |
+        pipenv --python ${{ matrix.python-version }} install --dev
+    - name: generate code
+      run: |
+        make api
+    - name: Build package sdist
+      if: matrix.python-version == '2.7'
+      run: |
+        pipenv run python api/setup.py sdist
+    - name: Build package wheel
+      run: |
+        pipenv run python api/setup.py bdist_wheel
+    - name: Publish package
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}
