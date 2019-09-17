@@ -30,13 +30,16 @@ jobs:
     - name: Build package sdist
       if: matrix.python-version == '2.7'
       run: |
-        pipenv run python api/setup.py sdist
+        cd api
+        pipenv run python setup.py sdist
     - name: Build package wheel
       run: |
-        pipenv run python api/setup.py bdist_wheel
+        cd api
+        pipenv run python setup.py bdist_wheel
     - name: Publish package
       if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@master
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.pypi_password }}
+      run: |
+        twine upload api/dist/*
