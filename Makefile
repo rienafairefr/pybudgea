@@ -1,9 +1,6 @@
 .PHONY: clean
 
-TAG_NAME:=${TAG_NAME}
-TRAVIS_TAG:=${TRAVIS_TAG}
-TRAVIS_BRANCH:=${TRAVIS_BRANCH}
-VERSION ?= $(if $(TRAVIS_TAG),$(TRAVIS_TAG),$(if $(TAG_NAME),$(TAG_NAME),dev))
+VERSION ?= $(shell pipenv run python -c "from setuptools_scm import get_version;print(get_version())")
 OPENAPIGEN_VERSION ?= v3.3.4
 
 deploy_pypi:
