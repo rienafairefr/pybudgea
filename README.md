@@ -1,4 +1,4 @@
-![](https://github.com/rienafairefr/pybudgea/workflows/Test%20Python%20package/badge.svg)
+![](https://github.com/rienafairefr/pybudgea/workflows/20Python%20package/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/rienafairefr/pybudgea/badge.svg?branch=master)](https://coveralls.io/github/rienafairefr/pybudgea?branch=master)
 
 # pybudgea
