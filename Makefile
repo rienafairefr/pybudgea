@@ -3,21 +3,6 @@
 VERSION ?= $(shell pipenv run python -c "from setuptools_scm import get_version;print(get_version())")
 OPENAPIGEN_VERSION ?= v3.3.4
 
-deploy_pypi:
-ifdef VERSION
-	rm -rf dist
-
-	cd api && python setup.py sdist bdist_wheel
-
-	twine upload -u ${PYPI_USER} -p ${PYPI_PASSWORD} api/dist/*
-else
-	@echo "not tagged"
-endif
-
-init:
-	pip install pipenv
-	pipenv install --dev
-
 test:
 	pipenv run py.test tests
 
