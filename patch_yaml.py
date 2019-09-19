@@ -1,3 +1,6 @@
+import collections
+
+import six
 import yaml
 
 
@@ -38,7 +41,6 @@ with open('openapi.yaml', 'r') as swagger_yaml:
 
 
     def treat_node(stack, node):
-        print(stack)
         if 'parameters' in node:
             parameters = node['parameters']
             for param in parameters:
@@ -81,5 +83,23 @@ with open('openapi.yaml', 'r') as swagger_yaml:
         }
     }
 
+
+def update(d, u):
+    for k, v in six.iteritems(u):
+        dv = d.get(k, {})
+        if not isinstance(dv, collections.Mapping):
+            d[k] = v
+        elif isinstance(v, collections.Mapping):
+            d[k] = update(dv, v)
+        else:
+            d[k] = v
+    return d
+
+
+with open('merge_in.yaml', 'r') as merge_in_yaml:
+    merge_in = yaml.safe_load(merge_in_yaml)
+
+swagger = update(swagger, merge_in)
+
 with open('openapi.yaml', 'w') as swagger_yaml:
-    yaml.dump(swagger, swagger_yaml)
+    yaml.dump(swagger, swagger_yaml, indent=2)

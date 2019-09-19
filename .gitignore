@@ -75,3 +75,4 @@ api/*/
 
 openapi\.yaml
 Pipfile.lock
+.secrets/

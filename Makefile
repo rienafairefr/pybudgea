@@ -3,14 +3,14 @@
 VERSION ?= $(shell pipenv run python -c "from setuptools_scm import get_version;print(get_version())")
 OPENAPIGEN_VERSION ?= v3.3.4
 
-test:
+test:setupto
 	pipenv run py.test tests
 
 clean:
 	rm -rf api
 	rm -f openapi.yaml
 
-openapi.yaml: swagger.json
+openapi.yaml: merge_in.yaml swagger.json
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
 	           generate -i /local/swagger.json \
 	           -g openapi-yaml -o /local/openapi-yaml

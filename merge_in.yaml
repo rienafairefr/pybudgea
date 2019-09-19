@@ -1,0 +1,98 @@
+paths:
+  /users/{id_user}/accounts/{id_account}/balances:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBalances'
+  /users/{id_user}/connections/{id_connection}/accounts/{id_account}/balances:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBalances'
+  /users/{id_user}/balances:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBalances'
+components:
+  schemas:
+    UserBalanceCurrency:
+      type: object
+      properties:
+        remains:
+          type: number
+          format: float
+        symbol:
+          type: string
+        balance:
+          type: number
+          format: float
+        expenses:
+          type: number
+          format: float
+        incomes:
+          type: number
+          format: float
+    UserBalanceTransaction:
+      type: object
+    UserBalance:
+      type: object
+      properties:
+        converted:
+          type: boolean
+        currencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserBalanceCurrency'
+        expenses:
+          type: number
+          format: float
+        incomes:
+          type: number
+          format: float
+        max_date:
+          type: string
+          format: date
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserBalanceTransaction'
+        remains:
+          type: number
+          format: float
+        balance:
+          type: number
+          format: float
+        min_date:
+          type: string
+          format: date
+    UserBalances:
+      type: object
+      properties:
+        result_min_date:
+          type: string
+          format: date
+        result_max_date:
+          type: string
+          format: date
+        total:
+          type: integer
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserBalance'
+        last_date:
+          type: string
+          format: date
+        first_date:
+          type: string
+          format: date
