@@ -4,6 +4,12 @@ import six
 import yaml
 
 
+def nested_set(dic, keys, value):
+    for key in keys[:-1]:
+        dic = dic.setdefault(key, {})
+    dic[keys[-1]] = value
+
+
 def visit_tree(stack, func, r):
     for k, v in r.items():
         if isinstance(v, dict):
@@ -13,24 +19,21 @@ def visit_tree(stack, func, r):
             stack.pop()
 
 
-def nested_set(dic, keys, value):
-    for key in keys[:-1]:
-        dic = dic.setdefault(key, {})
-    dic[keys[-1]] = value
-
-
-with open('openapi.yaml', 'r') as swagger_yaml:
-    swagger = yaml.load(swagger_yaml, Loader=yaml.SafeLoader)
+with open('openapi.yaml', 'r') as openapi_yaml:
+    openapi = yaml.load(openapi_yaml, Loader=yaml.SafeLoader)
 
     remapped_get = {
         '/connections': 'ConnectionsList',
         '/account_types': 'AccountTypesList',
         '/banks/{id_connector}/logos': 'ConnectorLogosList',
-        '/categories': 'CategoriesList'
+        '/categories': 'CategoriesList',
+        '/users/{id_user}/accounts/{id_account}/operationsalert': 'UserAlertsList',
+        '/users/{id_user}/connections/{id_connection}/accounts/{id_account}/operationsalert': 'UserAlertsList',
+        '/users/{id_user}/operationsalert': 'UserAlertsList',
     }
 
     remap = {
-        swagger['paths'][p]['get']['responses'][200]['content']['application/json']['schema'][
+        openapi['paths'][p]['get']['responses'][200]['content']['application/json']['schema'][
             '$ref']: '#/components/schemas/%s' % v
         for p, v in remapped_get.items()
     }
@@ -46,7 +49,9 @@ with open('openapi.yaml', 'r') as swagger_yaml:
             for param in parameters:
                 if param['name'] == 'expand':
                     param['required'] = False
-            pass
+        if 'content' in node:
+            if len(node['content'].keys()) > 1:
+                pass
         remapped_ref = remap.get(node.get('$ref'))
         if remapped_ref is not None:
             node['$ref'] = remapped_ref
@@ -61,21 +66,21 @@ with open('openapi.yaml', 'r') as swagger_yaml:
         return node
 
 
-    visit_tree([], treat_node, swagger)
+    visit_tree([], treat_node, openapi)
 
     for old, new in remapped_stacks.items():
-        el = swagger
+        el = openapi
         for path_el in old:
             el = el[path_el]
 
-        nested_set(swagger, new, el)
+        nested_set(openapi, new, el)
 
-        el = swagger
+        el = openapi
         for path_el in old[:-1]:
             el = el[path_el]
         del el[old[-1]]
 
-    swagger['components']['securitySchemes'] = {
+    openapi['components']['securitySchemes'] = {
         'Authorization': {
             'type': 'apiKey',
             'in': 'header',
@@ -99,7 +104,8 @@ def update(d, u):
 with open('merge_in.yaml', 'r') as merge_in_yaml:
     merge_in = yaml.safe_load(merge_in_yaml)
 
-swagger = update(swagger, merge_in)
+openapi = update(openapi, merge_in)
+openapi['servers'][0]['url'] = 'http:' + openapi['servers'][0]['url']
 
-with open('openapi.yaml', 'w') as swagger_yaml:
-    yaml.dump(swagger, swagger_yaml, indent=2)
+with open('openapi_patched.yaml', 'w') as openapi_yaml:
+    yaml.dump(openapi, openapi_yaml, indent=2)
