@@ -21921,7 +21921,6 @@
     "/services/interview/vardisson": {}
   },
   "host": "demo.biapi.pro",
-  "x-deactivated_services": [],
   "produces": [
     "application/json"
   ],
@@ -24783,12 +24782,6 @@
     },
     {
       "name": "Wealth"
-    }
-  ],
-  "x-servers": [
-    {
-      "url": "https://whisb-sandbox.biapi.pro/2.0",
-      "description": "whisb-sandbox.biapi.pro"
     }
   ]
 }
