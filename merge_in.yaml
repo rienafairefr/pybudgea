@@ -31,8 +31,324 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBalances'
+  /config:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/component/schemas/Config'
+
 components:
   schemas:
+    Config:
+      type: object
+      properties:
+        alerts.default.balance_max:
+          type: string
+        alerts.default.balance_min1:
+          type: string
+        alerts.default.balance_min2:
+          type: string
+        alerts.default.expense_max:
+          type: string
+        alerts.default.income_max:
+          type: string
+        alerts.default.resume_enabled:
+          type: string
+        alerts.enabled:
+          type: string
+        alerts.mails.enabled:
+          type: string
+        apid.client_id:
+          type: string
+        apid.enabled:
+          type: string
+        apid.last_token:
+          type: string
+        apid.password:
+          type: string
+        apid.service_url:
+          type: string
+        apid.token:
+          type: string
+        apid.user_id:
+          type: string
+        auth.allowed_api_tokens:
+          type: string
+        auth.block_count:
+          type: string
+        auth.block_seconds:
+          type: string
+        auth.change_email_url:
+          type: string
+        auth.confirm_register:
+          type: string
+        auth.confirm_url:
+          type: string
+        auth.confirmed_only:
+          type: string
+        auth.default_scope:
+          type: string
+        auth.default_token_expire:
+          type: string
+        auth.invite_only:
+          type: string
+        auth.mandatory:
+          type: string
+        auth.min_password_len:
+          type: string
+        auth.reinit_url:
+          type: string
+        auth.scoped_token_expire:
+          type: string
+        auth.super_password:
+          type: string
+        auth.token_size:
+          type: string
+        auth.user_mail_token_expire:
+          type: string
+        auth.user_token_expire:
+          type: string
+        autosync.cfonb:
+          type: string
+        autosync.enabled:
+          type: string
+        autosync.frequency:
+          type: string
+        autosync.retry_wrongpass:
+          type: string
+        autosync.send_update:
+          type: string
+        balance.ignore_refund:
+          type: string
+        bank.account.authorized_currencies:
+          type: string
+        bank.account.camelCase:
+          type: string
+        bank.account.cb_coming_to_balance:
+          type: string
+        bank.account.coming_account:
+          type: string
+        bank.implicit_date_filtering:
+          type: string
+        bank.trs.ignore_coming:
+          type: string
+        bank.trs.ignore_history:
+          type: string
+        bank.trs.update_date_scraped_on_undelete:
+          type: string
+        bddf.enabled:
+          type: string
+        biapi.allowed_origins:
+          type: string
+        biapi.callback_url:
+          type: string
+        biapi.enabled:
+          type: string
+        biapi.free_period:
+          type: string
+        biapi.manager.email:
+          type: string
+        biapi.multi_push:
+          type: string
+        biapi.prod:
+          type: string
+        blackbox_zip.enabled:
+          type: string
+        blackbox_zip.path:
+          type: string
+        boursorama.enabled:
+          type: string
+        captcha.enabled:
+          type: string
+        cat.bank_category_id:
+          type: string
+        cat.cb_summary_category_id:
+          type: string
+        cat.enabled:
+          type: string
+        cat.generalize:
+          type: string
+        cat.global_database:
+          type: string
+        cat.globalize:
+          type: string
+        cat.nature_lookup:
+          type: string
+        cat.remote_hashtable_url:
+          type: string
+        cat.remote_last_pull:
+          type: string
+        cat.remote_last_push:
+          type: string
+        cat.transfer_category_id:
+          type: string
+        cat.unknown_category_logo_id:
+          type: string
+        cat.web_lookup:
+          type: string
+        connection.allow_new_error:
+          type: string
+        connection.delay_error:
+          type: string
+        connection.delete_noacc:
+          type: string
+        connection.disable_new:
+          type: string
+        connection.error.to_wrongpass:
+          type: string
+        connection.expire:
+          type: string
+        connection.explicit_login_update:
+          type: string
+        connection.keep_success:
+          type: string
+        connection.questions_code:
+          type: string
+        connectioninformation.enabled:
+          type: string
+        connectors.default_auth_mechanism:
+          type: string
+        connectors.enable_new:
+          type: string
+        connectors.sources.enable_new:
+          type: string
+        crash.enabled:
+          type: string
+        creditprofile.enabled:
+          type: string
+        digiposte.enabled:
+          type: string
+        documents.accepted_types:
+          type: string
+        documents.force_ocr:
+          type: string
+        documents.force_pdf:
+          type: string
+        forecasts.enabled:
+          type: string
+        gmaps.enabled:
+          type: string
+        gmaps.key:
+          type: string
+        hashtable.enabled:
+          type: string
+        inapp.enabled:
+          type: string
+        inapp.google_key:
+          type: string
+        inapp.iab:
+          type: string
+        inapp.iap:
+          type: string
+        mails.enabled:
+          type: string
+        merchant.enabled:
+          type: string
+        merchant.webview.baseurl:
+          type: string
+        oauth2.enabled:
+          type: string
+        oidc.audience:
+          type: string
+        oidc.client:
+          type: string
+        oidc.enabled:
+          type: string
+        oidc.jwks:
+          type: string
+        oidc.whitelist.enabled:
+          type: string
+        premium.enabled:
+          type: string
+        premium.invites_needed:
+          type: string
+        premium.send_offers:
+          type: string
+        projects.enabled:
+          type: string
+        providers.enabled:
+          type: string
+        push.apn_cert:
+          type: string
+        push.apn_sandbox_cert:
+          type: string
+        push.enabled:
+          type: string
+        push.gcm_key:
+          type: string
+        push.gcm_server:
+          type: string
+        rate.enabled:
+          type: string
+        redgreen.enabled:
+          type: string
+        regulation.email:
+          type: string
+        regulation.transfer.amount_warning:
+          type: string
+        reporting.enabled:
+          type: string
+        root.app:
+          type: string
+        root.app_name:
+          type: string
+        root.baseurl:
+          type: string
+        root.prefix:
+          type: string
+        stet.access_token_duration:
+          type: string
+        stet.connector:
+          type: string
+        stet.enabled:
+          type: string
+        stet.oauth_uri:
+          type: string
+        stet.refresh_token_duration:
+          type: string
+        stet.signature_check:
+          type: string
+        stet.uri_baseurl:
+          type: string
+        transfer.beneficiary_label:
+          type: string
+        transfer.default_label:
+          type: string
+        transfer.enabled:
+          type: string
+        transfer.max_amount:
+          type: string
+        transfer.max_days_matching_transaction:
+          type: string
+        transfer.max_period_amount:
+          type: string
+        transfer.max_period_days:
+          type: string
+        transfer.recipient.iban_white_list.enabled:
+          type: string
+        transfer.recipient.iban_white_list.entries:
+          type: string
+        user.synced_devices:
+          type: string
+        wealth.detail:
+          type: string
+        wealth.enabled:
+          type: string
+        wealth.find_missing_isin:
+          type: string
+        wealth.get_liquidity:
+          type: string
+        wealth.vdate_nullable:
+          type: string
+        webhooks.ca_cert:
+          type: string
+        webhooks.compression.enabled:
+          type: string
+
+
     UserBalanceCurrency:
       type: object
       properties:
