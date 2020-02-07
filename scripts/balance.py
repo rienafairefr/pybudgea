@@ -14,7 +14,6 @@ BUDGEA_CLIENT_ID = APPLICATION_CREDENTIALS['budgea']['client_id']
 BUDGEA_CLIENT_SECRET = APPLICATION_CREDENTIALS['budgea']['client_secret']
 user = APPLICATION_CREDENTIALS['user']
 
-
 config = Configuration()
 
 config.host = BUDGEA_HOST
@@ -29,9 +28,21 @@ api = PFMApi(client)
 banks_api = BanksApi(client)
 user_accounts = banks_api.users_id_user_accounts_get('me')
 
-id_account = user_accounts.accounts[0].id
+for num in range(10):
+    id_account = user_accounts.accounts[num].id
+    id_connection = user_accounts.accounts[num].id_connection
 
-balances = api.users_id_user_balances_get('me')
-balance2 = api.users_id_user_accounts_id_account_balances_get('me', id_account)
+    period = '1year'
+    balances = [
+        api.users_id_user_balances_get('me', period=period),
+        api.users_id_user_accounts_id_account_balances_get('me', id_account, period=period),
+        api.users_id_user_connections_id_connection_accounts_id_account_balances_get('me', id_connection, id_account,
+                                                                                     period=period),
+        api.users_id_user_connections_id_connection_balances_get('me', id_connection, period=period)
+    ]
 
-pass
+    for ba in balances:
+        print(ba)
+        for b in ba.balances:
+            if len(b.transactions) != 0:
+                print(b.transactions)

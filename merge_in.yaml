@@ -7,6 +7,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBalances'
+  /users/{id_user}/connections/{id_connection}/balances:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBalances'
   /users/{id_user}/connections/{id_connection}/accounts/{id_account}/balances:
     get:
       responses:
@@ -42,8 +50,6 @@ components:
         incomes:
           type: number
           format: float
-    UserBalanceTransaction:
-      type: object
     UserBalance:
       type: object
       properties:
@@ -65,7 +71,7 @@ components:
         transactions:
           type: array
           items:
-            $ref: '#/components/schemas/UserBalanceTransaction'
+            $ref: '#/components/schemas/Transaction'
         remains:
           type: number
           format: float
