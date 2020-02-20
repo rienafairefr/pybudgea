@@ -26,7 +26,7 @@ client = ApiClient(config)
 
 api = PFMApi(client)
 banks_api = BanksApi(client)
-user_accounts = banks_api.users_id_user_accounts_get('me')
+user_accounts = banks_api.usersid_user_accounts_get('me')
 
 for num in range(10):
     id_account = user_accounts.accounts[num].id
@@ -34,11 +34,11 @@ for num in range(10):
 
     period = '1year'
     balances = [
-        api.users_id_user_balances_get('me', period=period),
-        api.users_id_user_accounts_id_account_balances_get('me', id_account, period=period),
-        api.users_id_user_connections_id_connection_accounts_id_account_balances_get('me', id_connection, id_account,
+        api.usersid_user_balances_get('me', period=period),
+        api.usersid_user_accountsid_account_balances_get('me', id_account, period=period),
+        api.usersid_user_connectionsid_connection_accountsid_account_balances_get('me', id_connection, id_account,
                                                                                      period=period),
-        api.users_id_user_connections_id_connection_balances_get('me', id_connection, period=period)
+        api.usersid_user_connectionsid_connection_balances_get('me', id_connection, period=period)
     ]
 
     for ba in balances:

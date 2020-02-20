@@ -133,13 +133,14 @@ with open('openapi.yaml', 'r') as openapi_yaml:
     assert len(set(remapped_stacks.values())) == len(remapped_stacks)
 
     def treat_node(stack, key, node):
-        if 'parameters' in node:
+        if len(stack) == 2 and stack[0] == 'paths':
             if 'operationId' not in node:
                 node['operationId'] = autogen_operation_id(stack[-1], key)
-            parameters = node['parameters']
-            for param in parameters:
-                if param['name'] == 'expand':
-                    param['required'] = False
+            if 'parameters' in node:
+                parameters = node['parameters']
+                for param in parameters:
+                    if param['name'] == 'expand':
+                        param['required'] = False
         if 'content' in node:
             if len(node['content'].keys()) > 1:
                 pass

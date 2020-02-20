@@ -8,7 +8,7 @@ certifi = ">=14.05.14"
 six = ">=1.10"
 python-dateutil = ">=2.5.3"
 urllib3 = ">=1.15.1"
-readme-renderer = {version = "*",extras = ["md"]}
+readme-renderer = {extras = ["md"],version = "*"}
 
 [dev-packages]
 pyyaml = "*"
@@ -23,3 +23,4 @@ twine = "*"
 coveralls = "*"
 pytest-cov = "*"
 setuptools_scm = "*"
+inflection = "*"

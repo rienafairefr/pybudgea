@@ -31,6 +31,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserBalances'
+  /users/{id_user}/config:
+    get:
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+    delete:
+      x-codegen-request-body-name: keys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keys:
+                  description: list of comma separated keys to be deleted.
+                  type: string
+    post:
+      x-codegen-request-body-name: config
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Config'
   /config:
     get:
       responses:
@@ -38,7 +64,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/component/schemas/Config'
+                $ref: '#/components/schemas/Config'
 
 components:
   callbacks:
