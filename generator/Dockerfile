@@ -1,6 +1,10 @@
 FROM jimschubert/8-jdk-alpine-mvn:1.0 as build
 
-COPY customcodegen .
+COPY pom.xml .
+
+RUN mvn dependency:go-offline
+
+COPY . .
 
 RUN mvn package
 
