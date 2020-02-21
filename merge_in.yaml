@@ -2,7 +2,7 @@ paths:
   /users/{id_user}/accounts/{id_account}/balances:
     get:
       responses:
-        200:
+        "200":
           content:
             application/json:
               schema:
@@ -10,7 +10,7 @@ paths:
   /users/{id_user}/connections/{id_connection}/balances:
     get:
       responses:
-        200:
+        "200":
           content:
             application/json:
               schema:
@@ -18,7 +18,7 @@ paths:
   /users/{id_user}/connections/{id_connection}/accounts/{id_account}/balances:
     get:
       responses:
-        200:
+        "200":
           content:
             application/json:
               schema:
@@ -26,7 +26,7 @@ paths:
   /users/{id_user}/balances:
     get:
       responses:
-        200:
+        "200":
           content:
             application/json:
               schema:
@@ -34,7 +34,7 @@ paths:
   /users/{id_user}/config:
     get:
       responses:
-        200:
+        "200":
           content:
             application/json:
               schema:
@@ -60,7 +60,7 @@ paths:
   /config:
     get:
       responses:
-        200:
+        "200":
           content:
             application/json:
               schema:

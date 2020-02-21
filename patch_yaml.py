@@ -96,7 +96,7 @@ with open('openapi.yaml', 'r') as openapi_yaml:
 
         def inner_remapped(op):
             for k, v in openapi['paths'].items():
-                ref = v.get(op, {}).get('responses', {}).get(200, {}).get('content', {}).get('application/json', {}).get(
+                ref = v.get(op, {}).get('responses', {}).get('200', {}).get('content', {}).get('application/json', {}).get(
                     'schema', {}).get('$ref')
                 if ref and ref in inline_schemas:
                     newRef = k.replace('/users/{id_user}', 'User')
@@ -121,7 +121,7 @@ with open('openapi.yaml', 'r') as openapi_yaml:
 
         for op in ('get', 'post'):
             for p, v in inner_remapped(op):
-                yield openapi['paths'][p][op]['responses'][200]['content']['application/json']['schema'][
+                yield openapi['paths'][p][op]['responses']['200']['content']['application/json']['schema'][
                     '$ref'], '#/components/schemas/%s' % v
 
     remap = dict(remapped())
