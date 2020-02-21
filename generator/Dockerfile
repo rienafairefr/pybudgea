@@ -4,7 +4,7 @@ COPY pom.xml .
 
 RUN mvn dependency:go-offline
 
-COPY . .
+COPY src /src
 
 RUN mvn package
 

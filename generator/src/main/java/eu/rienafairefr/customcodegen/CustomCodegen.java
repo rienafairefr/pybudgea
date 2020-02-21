@@ -205,8 +205,21 @@ public class CustomCodegen extends DefaultCodegen implements CodegenConfig {
 
     @Override
     public Map<String, Object> postProcessModels(Map<String, Object> objs) {
+        objs = postProcessSchemas(objs);
         // process enum in models
         return postProcessModelsEnum(objs);
+    }
+
+    private Map<String, Object> postProcessSchemas(Map<String, Object> objs) {
+        List<Object> models = (List<Object>) objs.get("models");
+        for (Object _mo : models) {
+            Map<String, Object> mo = (Map<String, Object>) _mo;
+            CodegenModel cm = (CodegenModel) mo.get("model");
+            for (CodegenProperty property: cm.vars) {
+
+            }
+        }
+        return objs;
     }
 
     @Override

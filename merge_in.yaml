@@ -83,6 +83,121 @@ components:
                 Your server implementation should return this HTTP status code
                 if the data was received successfully
   schemas:
+    Connection:
+      properties:
+        bank:
+          $ref: '#/components/schemas/ConnectionBank'
+        informations:
+          type: object
+        subscriptions:
+          type: array
+          items:
+            type: object
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectionAccount'
+        connector_uuid:
+          description: uuid of the connector (replaces id_connector)
+          type: string
+        error:
+          type: string
+          nullable: true
+        error_message:
+          description: If fail, error message received from bank or provider
+          type: string
+          nullable: true
+        last_push:
+          description: Last successful push
+          format: date-time
+          type: string
+          nullable: true
+        id_bank:
+          type: integer
+        id_provider:
+          type: integer
+        expire:
+          description: Expiration of the connection source. Used to purge the connection
+            in case completion was not finished
+          format: date-time
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        connector:
+          $ref: "#/components/schemas/ConnectionBank"
+
+    ConnectionBank:
+      type: object
+      properties:
+        sync_frequency:
+          type: string
+          nullable: true
+        code:
+          type: string
+        color:
+          type: string
+        auth_mechanism:
+          type: string
+        id:
+          type: integer
+        documents_type:
+          type: array
+          items:
+            type: string
+        uuid:
+          type: string
+        account_types:
+          type: array
+          items:
+            type: string
+        document_type:
+          type: array
+          items:
+            type: string
+        restricted:
+          type: boolean
+        available_transfer_mechanisms:
+          type: array
+          items:
+            type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+        transfer_beneficiary_types:
+          type: array
+          items:
+            type: string
+        months_to_fetch:
+          type: string
+          nullable: true
+        siret:
+          type: string
+          nullable: true
+        hidden:
+          type: boolean
+        available_auth_mechanisms:
+          type: array
+          items:
+            type: string
+        slug:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string
+        name:
+          type: string
+        beta:
+          type: boolean
+        urls:
+          type: array
+          items:
+            type: string
+        charged:
+          type: boolean
     Config:
       type: object
       properties:
@@ -389,7 +504,6 @@ components:
         webhooks.compression.enabled:
           type: string
 
-
     UserBalanceCurrency:
       type: object
       properties:
@@ -407,6 +521,195 @@ components:
         incomes:
           type: number
           format: float
+    ConnectionAccountCurrency:
+      type: object
+      properties:
+        crypto:
+          description: It is a crypto currency or not
+          type: boolean
+        datetime:
+          description: Time and date of Market Cap (for cryptos)
+          format: date-time
+          type: string
+          nullable: true
+        id:
+          description: ISO 4217 code used as ID
+          type: string
+        marketcap:
+          description: Market Capitalization in EUR
+          format: float
+          type: number
+          nullable: true
+        precision:
+          description: Numbers of significant digits
+          type: integer
+        prefix:
+          default: false
+          description: Amount is prefixed or not by the currency
+          type: boolean
+        name:
+          type: string
+        symbol:
+          description: Symbol representing the currency
+          type: string
+    ConnectionAccountLoan:
+      type: object
+      nullable: true
+      properties:
+        subscription_date:
+          type: string
+          format: datetime
+          nullable: true
+        total_amount:
+          type: number
+          format: float
+        nb_payments_left:
+          type: integer
+        next_payment_amount:
+          type: number
+          format: float
+          nullable: true
+        id_account:
+          type: integer
+        next_payment_date:
+          type: string
+          format: datetime
+        nb_payments_done:
+          type: integer
+          nullable: true
+        used_amount:
+          type: number
+          format: float
+          nullable: true
+        available_amount:
+          type: number
+          format: float
+          nullable: true
+        nb_payments_total:
+          type: integer
+          nullable: true
+        rate:
+          type: number
+          format: float
+        last_payment_date:
+          type: string
+          format: datetime
+          nullable: true
+        insurance_label:
+          type: string
+          nullable: true
+        account_label:
+          type: string
+          nullable: true
+        duration:
+          type: integer
+        last_payment_amount:
+          type: number
+          format: float
+          nullable: true
+        contact_name:
+          type: string
+          nullable: true
+        type:
+          type: string
+        id:
+          type: integer
+        maturity_date:
+          type: string
+          format: datetime
+          nullable: true
+
+    ConnectionAccount:
+      type: object
+      properties:
+        ownership:
+          type: string
+        loan:
+          $ref: "#/components/schemas/ConnectionAccountLoan"
+        webid:
+          type: string
+        number:
+          type: string
+        disabled:
+          description: If the account is disabled (not synchronized)
+          type: boolean
+          nullable: true
+        currency:
+          $ref: "#/components/schemas/ConnectionAccountCurrency"
+        id:
+          type: integer
+        bookmarked:
+          type: integer
+        formatted_balance:
+          type: string
+        id_connection:
+          type: integer
+        original_name:
+          type: string
+        last_update:
+          description: Last successful update of the account
+          format: date-time
+          type: string
+        id_source:
+          type: integer
+        company_name:
+          type: string
+          nullable: true
+        usage:
+          type: string
+          nullable: true
+        type:
+          type: string
+        recipients:
+          type: array
+          items:
+            type: object
+        transactions:
+          type: array
+          items:
+            type: object
+        deleted:
+          type: string
+          nullable: true
+        id_parent:
+          type: integer
+          nullable: true
+        bic:
+          type: string
+          nullable: true
+        iban:
+          type: string
+          nullable: true
+        id_type:
+          type: integer
+        coming_balance:
+          type: number
+          format: float
+        coming:
+          type: number
+          format: float
+          nullable: true
+        transfers:
+          type: array
+          items:
+            type: object
+        id_user:
+          type: integer
+        name:
+          type: string
+        display:
+          type: boolean
+        error:
+          type: string
+          nullable: true
+        balance:
+          type: number
+          format: float
+        investments:
+          type: array
+          items:
+            type: object
+
     UserBalance:
       type: object
       properties:

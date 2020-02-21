@@ -6,10 +6,11 @@ import pprint
 import re  # noqa: F401
 
 import six
-from marshmallow import Schema, validates, ValidationError
+import marshmallow
+from marshmallow import Schema, validates, ValidationError, post_load
 
+from {{packageName}}.models import {{classname}}
 from {{packageName}}.configuration import Configuration
-from {{modelPackage}} import field_type_to_field
 
 
 {{#models}}
@@ -21,10 +22,8 @@ class {{classname}}Schema(Schema):
     Do not edit the class manually.
     """
 {{#vars}}
-
-    {{name}} = field_type_to_field('{{dataType}}')()
+    {{name}} = {{>partial_type}}
 {{/vars}}
-
 {{#vars}}
     @validates("{{name}}")
     def validates_{{name}}(self, {{name}}):
@@ -98,5 +97,10 @@ class {{classname}}Schema(Schema):
         pass
 
 {{/vars}}
+    @post_load
+    def post_load(self, data, many, **kwargs):
+        config = Configuration()
+        config.client_side_validation = False
+        return {{classname}}(local_vars_configuration=config, **data)
 {{/model}}
 {{/models}}

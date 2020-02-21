@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.openapitools.codegen.ClientOptInput;
 import org.openapitools.codegen.DefaultGenerator;
 import org.openapitools.codegen.config.CodegenConfigurator;
+import org.openapitools.codegen.templating.MustacheEngineAdapter;
 
 /***
  * This test allows you to easily launch your code generation software under a debugger.
@@ -32,4 +33,7 @@ public class CustomCodegenTest {
     DefaultGenerator generator = new DefaultGenerator();
     generator.opts(clientOptInput).generate();
   }
+    @Test
+    public void TestTemplate() {
+    }
 }

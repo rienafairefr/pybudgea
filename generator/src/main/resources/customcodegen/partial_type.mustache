@@ -1,0 +1,57 @@
+{{#isContainer}}
+    {{#isListContainer}}
+marshmallow.fields.List({{#items}}{{>partial_type}}{{/items}},{{>partial_type_parameters}})
+    {{/isListContainer}}
+    {{#isMapContainer}}
+    {{/isMapContainer}}
+{{/isContainer}}
+{{^isContainer}}
+{{#isPrimitiveType}}
+    {{#isNumber}}
+marshmallow.fields.Number({{>partial_type_parameters}})
+    {{/isNumber}}
+    {{^isNumber}}
+    {{/isNumber}}
+    {{#isInteger}}
+marshmallow.fields.Integer({{>partial_type_parameters}})
+    {{/isInteger}}
+    {{^isInteger}}
+    {{/isInteger}}
+    {{#isFloat}}
+marshmallow.fields.Float({{>partial_type_parameters}})
+    {{/isFloat}}
+    {{^isFloat}}
+    {{/isFloat}}
+    {{#isString}}
+marshmallow.fields.String({{>partial_type_parameters}})
+    {{/isString}}
+    {{^isString}}
+    {{/isString}}
+    {{#isBoolean}}
+marshmallow.fields.Boolean({{>partial_type_parameters}})
+    {{/isBoolean}}
+    {{^isBoolean}}
+    {{/isBoolean}}
+    {{#isDate}}
+marshmallow.fields.Date({{>partial_type_parameters}})
+    {{/isDate}}
+    {{^isDate}}
+    {{/isDate}}
+    {{#isDateTime}}
+marshmallow.fields.DateTime({{>partial_type_parameters}})
+    {{/isDateTime}}
+    {{^isDateTime}}
+    {{/isDateTime}}
+{{/isPrimitiveType}}
+{{^isPrimitiveType}}
+    {{#isFreeFormObject}}
+marshmallow.fields.Dict({{>partial_type_parameters}})
+    {{/isFreeFormObject}}
+    {{#isModel}}
+marshmallow.fields.Nested('{{dataType}}Schema', {{>partial_type_parameters}})
+    {{/isModel}}
+    {{#isSelfReference}}
+marshmallow.fields.Nested('self', {{>partial_type_parameters}})
+    {{/isSelfReference}}
+{{/isPrimitiveType}}
+{{/isContainer}}
