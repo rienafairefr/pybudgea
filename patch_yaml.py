@@ -1,7 +1,6 @@
 import collections
 import re
 
-import six
 import yaml
 from inflection import camelize
 
@@ -181,7 +180,7 @@ with open('openapi.yaml', 'r') as openapi_yaml:
 
 
 def update(d, u):
-    for k, v in six.iteritems(u):
+    for k, v in u.items():
         dv = d.get(k, {})
         if not isinstance(dv, collections.Mapping):
             d[k] = v

@@ -5,12 +5,9 @@ name = "pypi"
 
 [packages]
 certifi = ">=14.05.14"
-six = ">=1.10"
 python-dateutil = ">=2.5.3"
 urllib3 = ">=1.15.1"
 readme-renderer = {extras = ["md"],version = "*"}
-
-[dev-packages]
 pyyaml = "*"
 coverage = ">=4.0.3"
 nose = ">=1.3.7"
@@ -24,3 +21,5 @@ coveralls = "*"
 pytest-cov = "*"
 setuptools_scm = "*"
 inflection = "*"
+
+[dev-packages]
