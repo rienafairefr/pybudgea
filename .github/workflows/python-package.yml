@@ -19,20 +19,17 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - uses: dschep/install-pipenv-action@v1
     - name: Install dependencies
-      run: |
-        pipenv install
+      run: pipenv install
     - name: generate code
-      run: |
+      run: make api
     - name: install the package under test
       run: pipenv run pip install -e api
     - name: Test with pytest
-      run: |
-        pipenv run pytest --cov=api
+      run: pipenv run pytest --cov=api
     - name: Coveralls
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.coveralls_repo_token }}
-      run: |
-        pipenv run coveralls
+      run: pipenv run coveralls
 
   publish:
     needs: test
@@ -46,11 +43,9 @@ jobs:
         python-version: 3.5
     - uses: dschep/install-pipenv-action@v1
     - name: Install dependencies
-      run: |
-        pipenv --python 3.5 install
+      run: pipenv --python 3.5 install
     - name: generate code
-      run: |
-        make api
+      run: make api
     - name: Build package sdist
       run: |
         cd api
