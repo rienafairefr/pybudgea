@@ -23,7 +23,8 @@ jobs:
         pipenv install
     - name: generate code
       run: |
-        make api
+    - name: install the package under test
+      run: pipenv run pip install -e api
     - name: Test with pytest
       run: |
         pipenv run pytest --cov=api
