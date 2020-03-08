@@ -95,39 +95,41 @@ paths:
                     format: float
   /users/{id_user}/resume:
     get:
-      '200':
-        content:
-          application/json:
-            schema:
-              properties:
-                last_resume:
-                  type: datetime
-                newsletter_enabled:
-                  type: boolean
-                promotion_enabled:
-                  type: boolean
-                resume_enabled:
-                  type: boolean
-                resume_frequency:
-                  type: string
-                  format: datetime
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  last_resume:
+                    type: datetime
+                  newsletter_enabled:
+                    type: boolean
+                  promotion_enabled:
+                    type: boolean
+                  resume_enabled:
+                    type: boolean
+                  resume_frequency:
+                    type: string
+                    format: datetime
     post:
-      '200':
-        content:
-          application/json:
-            schema:
-              properties:
-                last_resume:
-                  type: datetime
-                newsletter_enabled:
-                  type: boolean
-                promotion_enabled:
-                  type: boolean
-                resume_enabled:
-                  type: boolean
-                resume_frequency:
-                  type: string
-                  format: datetime
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  last_resume:
+                    type: datetime
+                  newsletter_enabled:
+                    type: boolean
+                  promotion_enabled:
+                    type: boolean
+                  resume_enabled:
+                    type: boolean
+                  resume_frequency:
+                    type: string
+                    format: datetime
   /users/{id_user}/token:
     post:
       responses:
