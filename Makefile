@@ -12,7 +12,7 @@ clean:
 	rm -f openapi_patched.yaml
 	rm -f swagger_patched.json
 
-swagger_patched.json: swagger.json
+swagger_0.json: swagger.json
 	pipenv run python patch_json.py
 
 openapi.yaml: swagger_patched.json
@@ -22,25 +22,37 @@ openapi.yaml: swagger_patched.json
 	cp openapi-yaml/openapi/openapi.yaml openapi.yaml
 	rm -rf openapi-yaml
 
-openapi_patched.yaml: merge_in.yaml swagger_patched.json openapi.yaml
-	pipenv run python patch_yaml.py
+openapi_00.yaml: openapi.yaml merge_in_yaml.py merge_in_0.yaml
+	pipenv run python merge_in_yaml.py -i openapi.yaml -o openapi_00.yaml -m merge_in_0.yaml
 
-docker_image: $(wildcard generator/**/*)  $(wildcard generator/*)
+openapi_0.yaml: openapi_00.yaml patch_yaml.py
+	pipenv run python patch_yaml.py -i openapi_00.yaml -o openapi_0.yaml
+
+openapi_1.yaml: openapi_0.yaml merge_in.yaml merge_in_yaml.py
+	pipenv run python merge_in_yaml.py -i openapi_0.yaml -o openapi_1.yaml -m merge_in.yaml
+
+openapi_2.yaml: openapi_1.yaml diff_openapi.json patch_diff_yaml.py
+	pipenv run python patch_diff_yaml.py -i openapi_1.yaml -o openapi_2.yaml -d diff_openapi.json
+
+docker_image: $(wildcard generator/**/*) $(wildcard generator/*)
 	docker build -t pybudgea-custom-codegen generator
 
-api: openapi_patched.yaml Makefile $(wildcard templates/**/*) $(wildcard templates/*) docker_image
-	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
-	           generate -i /local/openapi_patched.yaml \
+clean_api:
+	rm -rf api
+
+api: openapi_2.yaml Makefile $(wildcard templates/**/*) $(wildcard templates/*) docker_image
+	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local pybudgea-custom-codegen \
+	           generate -i /local/openapi_2.yaml \
 	           -t /local/templates \
 	           --git-user-id rienafairefr \
 	           --git-repo-id pybudgea \
-	           -g python -o /local/api \
+	           -g eu.rienafairefr.customcodegen.PythonCustomCodegen -o /local/api \
 	           -p projectName=pybudgea \
 	           -p packageName=budgea \
 	           -p packageVersion="$(VERSION)" \
 	           -p appName="pybudgea" \
 	           -p infoEmail="rienafairefr@gmail.com"
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local pybudgea-custom-codegen \
-	           generate -i /local/openapi_patched.yaml \
-	           -g customcodegen -o /local/api \
+	           generate -i /local/openapi_2.yaml \
+	           -g eu.rienafairefr.customcodegen.CustomCodegen -o /local/api \
 	           -p packageName=budgea

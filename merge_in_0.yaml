@@ -1,0 +1,140 @@
+paths:
+  /admin/jwt:
+    post:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  jwt_token:
+                    type: string
+                  payload:
+                    type: object
+                    properties:
+                      iat:
+                        type: integer
+                      type:
+                        type: string
+                      aud:
+                        type: string
+                      exp:
+                        type: integer
+                      scope:
+                        type: string
+  /categorize:
+    post:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  failed:
+                    type: integer
+                  total:
+                    type: integer
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id_category:
+                          type: integer
+                        state:
+                          type: string
+                        type:
+                          type: string
+                        value:
+                          type: number
+                          format: float
+                        wording:
+                          type: string
+  /users/{id_user}/accountsalert:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  balance_min1:
+                    type: number
+                    format: float
+                  balance_min2:
+                    type: number
+                    format: float
+                  enabled:
+                    type: boolean
+                  expense_max:
+                    type: number
+                    format: float
+                  income_max:
+                    type: number
+                    format: float
+    put:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  balance_min1:
+                    type: number
+                    format: float
+                  balance_min2:
+                    type: number
+                    format: float
+                  enabled:
+                    type: boolean
+                  expense_max:
+                    type: number
+                    format: float
+                  income_max:
+                    type: number
+                    format: float
+  /users/{id_user}/resume:
+    get:
+      '200':
+        content:
+          application/json:
+            schema:
+              properties:
+                last_resume:
+                  type: datetime
+                newsletter_enabled:
+                  type: boolean
+                promotion_enabled:
+                  type: boolean
+                resume_enabled:
+                  type: boolean
+                resume_frequency:
+                  type: string
+                  format: datetime
+    post:
+      '200':
+        content:
+          application/json:
+            schema:
+              properties:
+                last_resume:
+                  type: datetime
+                newsletter_enabled:
+                  type: boolean
+                promotion_enabled:
+                  type: boolean
+                resume_enabled:
+                  type: boolean
+                resume_frequency:
+                  type: string
+                  format: datetime
+  /users/{id_user}/token:
+    post:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string

@@ -99,8 +99,8 @@ class {{classname}}Schema(Schema):
 {{/vars}}
     @post_load
     def post_load(self, data, many, **kwargs):
-        config = Configuration()
+        config = budgea.configuration.Configuration()
         config.client_side_validation = False
-        return {{classname}}(local_vars_configuration=config, **data)
+        return budgea.models.{{classname}}(local_vars_configuration=config, **data)
 {{/model}}
 {{/models}}

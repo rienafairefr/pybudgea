@@ -89,10 +89,12 @@ components:
           $ref: '#/components/schemas/ConnectionBank'
         informations:
           type: object
+          title: ConnectionInformations
         subscriptions:
           type: array
           items:
             type: object
+            title: ConnectionSubscription
         accounts:
           type: array
           items:
@@ -198,6 +200,16 @@ components:
             type: string
         charged:
           type: boolean
+    Currency:
+      example:
+        name: "Euro"
+        symbol: "€"
+        precision: 2
+        crypto: false
+        prefix: false
+        marketcap: null
+        datetime: null
+        id: "EUR"
     Config:
       type: object
       properties:
@@ -521,37 +533,6 @@ components:
         incomes:
           type: number
           format: float
-    ConnectionAccountCurrency:
-      type: object
-      properties:
-        crypto:
-          description: It is a crypto currency or not
-          type: boolean
-        datetime:
-          description: Time and date of Market Cap (for cryptos)
-          format: date-time
-          type: string
-          nullable: true
-        id:
-          description: ISO 4217 code used as ID
-          type: string
-        marketcap:
-          description: Market Capitalization in EUR
-          format: float
-          type: number
-          nullable: true
-        precision:
-          description: Numbers of significant digits
-          type: integer
-        prefix:
-          default: false
-          description: Amount is prefixed or not by the currency
-          type: boolean
-        name:
-          type: string
-        symbol:
-          description: Symbol representing the currency
-          type: string
     ConnectionAccountLoan:
       type: object
       nullable: true
@@ -635,7 +616,7 @@ components:
           type: boolean
           nullable: true
         currency:
-          $ref: "#/components/schemas/ConnectionAccountCurrency"
+          $ref: "#/components/schemas/Currency"
         id:
           type: integer
         bookmarked:
@@ -664,10 +645,12 @@ components:
           type: array
           items:
             type: object
+            title: ConnectionAccountRecipient
         transactions:
           type: array
           items:
             type: object
+            title: ConnectionAccountTransaction
         deleted:
           type: string
           nullable: true
@@ -693,6 +676,7 @@ components:
           type: array
           items:
             type: object
+            title: ConnectionAccountTransfer
         id_user:
           type: integer
         name:
@@ -709,6 +693,7 @@ components:
           type: array
           items:
             type: object
+            title: ConnectionAccountInvestment
 
     UserBalance:
       type: object

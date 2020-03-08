@@ -1,0 +1,70 @@
+[
+  {
+    "op": "remove",
+    "path": "/components/schemas/Transfer/properties/currency/description"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Transfer/properties/currency/type"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Transfer/properties/currency/properties"
+  },
+  {
+    "op": "add",
+    "path": "/components/schemas/Transfer/properties/currency/$ref",
+    "value": "#/components/schemas/Currency"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Account/properties/currency/description"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Account/properties/currency/type"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Account/properties/currency/properties"
+  },
+  {
+    "op": "add",
+    "path": "/components/schemas/Account/properties/currency/$ref",
+    "value": "#/components/schemas/Currency"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Recipient/properties/currency/description"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Recipient/properties/currency/type"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Recipient/properties/currency/properties"
+  },
+  {
+    "op": "add",
+    "path": "/components/schemas/Recipient/properties/currency/$ref",
+    "value": "#/components/schemas/Currency"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Document/properties/currency/description"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Document/properties/currency/type"
+  },
+  {
+    "op": "remove",
+    "path": "/components/schemas/Document/properties/currency/properties"
+  },
+  {
+    "op": "add",
+    "path": "/components/schemas/Document/properties/currency/$ref",
+    "value": "#/components/schemas/Currency"
+  }
+]

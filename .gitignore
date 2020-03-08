@@ -74,8 +74,8 @@ api/*/
 .openapi-generator-ignore
 
 openapi\.yaml
-openapi_patched\.yaml
 Pipfile.lock
 .secrets/
 swagger_patched.json
 incoming_push.json
+openapi_*.yaml

@@ -1,8 +1,9 @@
-import collections
 import re
 
 import yaml
 from inflection import camelize
+
+from utils import parser
 
 
 def nested_set(dic, keys, value):
@@ -20,73 +21,73 @@ def visit_tree(stack, func, r):
             stack.pop()
 
 
-with open('openapi.yaml', 'r') as openapi_yaml:
-    openapi = yaml.load(openapi_yaml, Loader=yaml.SafeLoader)
+def sanitize_value(value, replace_match, replace_value, exception_list):
+    if len(exception_list) == 0 or replace_match not in exception_list:
+        return value.replace(replace_match, replace_value)
+    return value
 
 
-    def sanitize_value(value, replace_match, replace_value, exception_list):
-        if len(exception_list) == 0 or replace_match not in exception_list:
-            return value.replace(replace_match, replace_value)
-        return value
+def sanitize_name(name, remove_char_regex=r'\W', exception_list=None):
+    exception_list = exception_list or []
+    if name is None:
+        return 'ERROR_UNKNOWN'
+    if name == '$':
+        return 'value'
 
-    def sanitize_name(name, remove_char_regex=r'\W', exception_list=None):
-        exception_list = exception_list or []
-        if name is None:
-            return 'ERROR_UNKNOWN'
-        if name == '$':
-            return 'value'
+    name = sanitize_value(name, r'\[\]', "", exception_list)
 
-        name = sanitize_value(name, r'\[\]', "", exception_list)
+    # input[] => input
+    name = sanitize_value(name, r"\[\]", "", exception_list)
 
-        # input[] => input
-        name = sanitize_value(name, r"\[\]", "", exception_list)
+    # input[a][b] => input_a_b
+    name = sanitize_value(name, r"\[", "_", exception_list)
+    name = sanitize_value(name, r"\]", "", exception_list)
 
-        # input[a][b] => input_a_b
-        name = sanitize_value(name, r"\[", "_", exception_list)
-        name = sanitize_value(name, r"\]", "", exception_list)
+    # input(a)(b) => input_a_b
+    name = sanitize_value(name, r"\(", "_", exception_list)
+    name = sanitize_value(name, r"\)", "", exception_list)
 
-        # input(a)(b) => input_a_b
-        name = sanitize_value(name, r"\(", "_", exception_list)
-        name = sanitize_value(name, r"\)", "", exception_list)
+    # input.name => input_name
+    name = sanitize_value(name, r"\.", "_", exception_list)
 
-        # input.name => input_name
-        name = sanitize_value(name, r"\.", "_", exception_list)
+    # input-name => input_name
+    name = sanitize_value(name, "-", "_", exception_list)
 
-        # input-name => input_name
-        name = sanitize_value(name, "-", "_", exception_list)
+    # a|b => a_b
+    name = sanitize_value(name, r"\|", "_", exception_list)
 
-        # a|b => a_b
-        name = sanitize_value(name, r"\|", "_", exception_list)
+    # input name and age => input_name_and_age
+    name = sanitize_value(name, " ", "_", exception_list)
 
-        # input name and age => input_name_and_age
-        name = sanitize_value(name, " ", "_", exception_list)
+    # /api/films/get => _api_films_get
+    # \api\films\get => _api_films_get
+    name = name.replace("/", "_")
+    name = name.replace(r"\\", "_")
 
-        # /api/films/get => _api_films_get
-        # \api\films\get => _api_films_get
-        name = name.replace("/", "_")
-        name = name.replace(r"\\", "_")
+    # remove everything else other than word, number and _
+    # $php_variable => php_variable
+    name = re.sub(remove_char_regex, "", name)
+    return name
 
-        # remove everything else other than word, number and _
-        # $php_variable => php_variable
-        name = re.sub(remove_char_regex, "", name)
-        return name
 
-    def autogen_operation_id(path, http_method):
-        tmp_path = path.replace('\{', "")
-        tmp_path = tmp_path.replace('\}', "")
-        parts = (tmp_path + '/' + http_method).split('/')
-        builder = ""
-        if tmp_path == '/':
-            builder += 'root'
-        for part in parts:
-            if len(part) > 0:
-                if len(builder) == 0:
-                    part = part[0].lower() + part[1:]
-                else:
-                    part = camelize(part)
-                builder += part
-        return sanitize_name(builder)
+def autogen_operation_id(path, http_method):
+    tmp_path = path.replace('\{', "")
+    tmp_path = tmp_path.replace('\}', "")
+    parts = (tmp_path + '/' + http_method).split('/')
+    builder = ""
+    if tmp_path == '/':
+        builder += 'root'
+    for part in parts:
+        if len(part) > 0:
+            if len(builder) == 0:
+                part = part[0].lower() + part[1:]
+            else:
+                part = camelize(part)
+            builder += part
+    return sanitize_name(builder)
 
+
+def step_change(openapi):
     def remapped():
         inline_schemas = []
         for schema in openapi['components']['schemas']:
@@ -140,9 +141,16 @@ with open('openapi.yaml', 'r') as openapi_yaml:
                 for param in parameters:
                     if param['name'] == 'expand':
                         param['required'] = False
-        if 'content' in node:
-            if len(node['content'].keys()) > 1:
-                pass
+            node['security'] = [
+                {'Authorization': []}
+            ]
+        if len(stack) == 2 and stack[0] == 'components' and stack[1] == 'schemas':
+            if 'example' in node:
+                del node['example']
+            if 'properties' in node:
+                for k, v in node['properties'].items():
+                    if v.get('type') == 'object' and v.get('title') is None:
+                        v['title'] = key + k.capitalize()
         remapped_ref = remap.get(node.get('$ref'))
         if remapped_ref is not None:
             node['$ref'] = remapped_ref
@@ -150,13 +158,7 @@ with open('openapi.yaml', 'r') as openapi_yaml:
             if 'id_weboob' in node['required']:
                 node['required'].remove('id_weboob')
 
-        if len(stack) == 2 and stack[0] == 'paths':
-            node['security'] = [
-                {'Authorization': []}
-            ]
         return node
-
-    visit_tree([], treat_node, openapi)
 
     for old, new in remapped_stacks.items():
         el = openapi
@@ -170,6 +172,8 @@ with open('openapi.yaml', 'r') as openapi_yaml:
             el = el[path_el]
         del el[old[-1]]
 
+    visit_tree([], treat_node, openapi)
+
     openapi['components']['securitySchemes'] = {
         'Authorization': {
             'type': 'apiKey',
@@ -178,24 +182,15 @@ with open('openapi.yaml', 'r') as openapi_yaml:
         }
     }
 
+    openapi['servers'][0]['url'] = 'http:' + openapi['servers'][0]['url']
 
-def update(d, u):
-    for k, v in u.items():
-        dv = d.get(k, {})
-        if not isinstance(dv, collections.Mapping):
-            d[k] = v
-        elif isinstance(v, collections.Mapping):
-            d[k] = update(dv, v)
-        else:
-            d[k] = v
-    return d
+    return openapi
 
 
-with open('merge_in.yaml', 'r') as merge_in_yaml:
-    merge_in = yaml.safe_load(merge_in_yaml)
+args = parser.parse_args()
 
-openapi = update(openapi, merge_in)
-openapi['servers'][0]['url'] = 'http:' + openapi['servers'][0]['url']
-
-with open('openapi_patched.yaml', 'w') as openapi_yaml:
-    yaml.dump(openapi, openapi_yaml, indent=2)
+with open(args.input, 'r') as input_yaml,\
+        open(args.output, 'w') as output_yaml:
+    openapi_content = yaml.load(input_yaml, Loader=yaml.SafeLoader)
+    openapi_content = step_change(openapi_content)
+    yaml.dump(openapi_content, output_yaml, indent=2)

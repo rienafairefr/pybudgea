@@ -1,0 +1,29 @@
+from budgea import models
+from datetime import datetime, time, date, timedelta
+
+from marshmallow import fields
+
+
+class WithIdentityMixin:
+    identity_type: type
+
+    def _deserialize(self, value, attr, data, **kwargs):
+        if isinstance(value, self.identity_type):
+            return value
+        return super()._deserialize(value, attr, data, **kwargs)
+
+
+class DateTime(WithIdentityMixin, fields.DateTime):
+    identity_type = datetime
+
+
+class Date(WithIdentityMixin, fields.Date):
+    identity_type = date
+{{#models}}
+{{#model}}
+
+
+class {{classname}}Nested(WithIdentityMixin, fields.Nested):
+    identity_type = models.{{classname}}
+{{/model}}
+{{/models}}

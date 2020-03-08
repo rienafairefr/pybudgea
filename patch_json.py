@@ -1,9 +1,7 @@
 import json
 
 
-with open('swagger.json', 'r') as swagger_json:
-    swagger = json.load(swagger_json)
-
+def step0(swagger):
     for path, node in swagger['paths'].items():
         for method, operation in node.items():
             if 'parameters' in operation:
@@ -17,7 +15,11 @@ with open('swagger.json', 'r') as swagger_json:
                 for code, value in operation['responses'].items():
                     if 'examples' in value:
                         value.get('schema', {})['example'] = value.pop('examples')
+    return swagger
 
 
-with open('swagger_patched.json', 'w') as swagger_patched_json:
-    json.dump(swagger, swagger_patched_json, indent=2)
+with open('swagger_0.json', 'w') as swagger_patched_json,\
+        open('swagger.json', 'r') as swagger_json:
+    swagger_content = json.load(swagger_json)
+    swagger_content = step0(swagger_content)
+    json.dump(swagger_content, swagger_patched_json, indent=2)
