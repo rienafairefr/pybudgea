@@ -1,80 +1,9 @@
 paths:
-  /admin/jwt:
-    post:
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                properties:
-                  jwt_token:
-                    type: string
-                  payload:
-                    type: object
-                    properties:
-                      iat:
-                        type: integer
-                      type:
-                        type: string
-                      aud:
-                        type: string
-                      exp:
-                        type: integer
-                      scope:
-                        type: string
   /categorize:
-    post:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  failed:
-                    type: integer
-                  total:
-                    type: integer
-                  transactions:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id_category:
-                          type: integer
-                        state:
-                          type: string
-                        type:
-                          type: string
-                        value:
-                          type: number
-                          format: float
-                        wording:
-                          type: string
-  /users/{id_user}/accountsalert:
-    get:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  balance_min1:
-                    type: number
-                    format: float
-                  balance_min2:
-                    type: number
-                    format: float
-                  enabled:
-                    type: boolean
-                  expense_max:
-                    type: number
-                    format: float
-                  income_max:
-                    type: number
-                    format: float
     put:
       responses:
         '200':
+          description: Categorize data
           content:
             application/json:
               schema:
@@ -93,50 +22,209 @@ paths:
                   income_max:
                     type: number
                     format: float
-  /users/{id_user}/resume:
-    get:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  last_resume:
-                    type: datetime
-                  newsletter_enabled:
-                    type: boolean
-                  promotion_enabled:
-                    type: boolean
-                  resume_enabled:
-                    type: boolean
-                  resume_frequency:
-                    type: string
-                    format: datetime
+
+  /config:
     post:
       responses:
         '200':
           content:
             application/json:
               schema:
-                properties:
-                  last_resume:
-                    type: datetime
-                  newsletter_enabled:
-                    type: boolean
-                  promotion_enabled:
-                    type: boolean
-                  resume_enabled:
-                    type: boolean
-                  resume_frequency:
-                    type: string
-                    format: datetime
-  /users/{id_user}/token:
-    post:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                properties:
-                  token:
-                    type: string
+                additionalProperties:
+                  type: string
+# {'alerts.default.balance_max': '10000',
+#  'alerts.default.balance_min1': '500',
+#  'alerts.default.balance_min2': '0',
+#  'alerts.default.expense_max': '500',
+#  'alerts.default.income_max': '500',
+#  'alerts.default.resume_enabled': '1',
+#  'alerts.enabled': '0',
+#  'alerts.mails.enabled': '0',
+#  'apid.client_id': '',
+#  'apid.enabled': '0',
+#  'apid.last_token': '',
+#  'apid.password': '',
+#  'apid.service_url': '',
+#  'apid.token': '',
+#  'apid.user_id': ''
+#  'auth.allowed_api_tokens': ''
+#  'auth.block_count': '5'
+#  'auth.block_seconds': '60'
+#  'auth.change_email_url': '%(baseurl)s/user/confirmNewEmail?token=%(token)s'
+#  'auth.confirm_register': '1'
+#  'auth.confirm_url': '%(baseurl)s/user/confirmEmail?token=%(token)s'
+#  'auth.confirmed_only': '0'
+#  'auth.default_scope': ''
+#  'auth.default_token_expire': '43200'
+#  'auth.invite_only': '0'
+#  'auth.mandatory': '0'
+#  'auth.min_password_len': '8'
+#  'auth.reinit_url': '%(baseurl)s/user/reinitPassword?token=%(token)s'
+#  'auth.scoped_token_expire': '30'
+#  'auth.super_password': ''
+#  'auth.token_size': '128'
+#  'auth.user_mail_token_expire': '43200'
+#  'auth.user_token_expire': '30'
+#  'autosync.cfonb': '0'
+#  'autosync.enabled': '1'
+#  'autosync.frequency': '1'
+#  'autosync.retry_wrongpass': '1'
+#  'autosync.send_update': '1'
+#  'balance.ignore_refund': '0'
+#  'bank.account.authorized_currencies': ''
+#  'bank.account.camelCase': '0'
+#  'bank.account.cb_coming_to_balance': '0'
+#  'bank.account.coming_account': ''
+#  'bank.account.display_loans': '0'
+#  'bank.implicit_date_filtering': '0'
+#  'bank.trs.ignore_coming': '0'
+#  'bank.trs.ignore_history': '0'
+#  'bank.trs.update_date_scraped_on_undelete': '0'
+#  'bddf.enabled': '0'
+#  'biapi.allowed_origins': ''
+#  'biapi.callback_url': 'https://example.org/api/sync'
+#  'biapi.enabled': '1'
+#  'biapi.free_period': '0'
+#  'biapi.manager.email': 'xxxx@provider.com'
+#  'biapi.multi_push': '0'
+#  'biapi.prod': '0'
+#  'blackbox_zip.enabled': '1'
+#  'blackbox_zip.path': '/var/log/bi/data/'
+#  'boursorama.enabled': '0'
+#  'captcha.enabled': '1'
+#  'cat.bank_category_id': ''
+#  'cat.cb_summary_category_id': ''
+#  'cat.enabled': '0'
+#  'cat.generalize': '0'
+#  'cat.global_database': ''
+#  'cat.globalize': '0'
+#  'cat.nature_lookup': '0'
+#  'cat.remote_hashtable_url': ''
+#  'cat.remote_last_pull': ''
+#  'cat.remote_last_push': ''
+#  'cat.transfer_category_id': ''
+#  'cat.unknown_category_logo_id': ''
+#  'cat.web_lookup': '0'
+#  'connection.allow_new_error': '0'
+#  'connection.delay_error': '1'
+#  'connection.delete_noacc': '0'
+#  'connection.disable_new': '0'
+#  'connection.error.to_wrongpass': 'webauthRequired
+# SCARequired
+# passwordExpired'
+#  'connection.expire': '120'
+#  'connection.explicit_login_update': '0'
+#  'connection.keep_success': '1'
+#  'connection.questions_code': '202'
+#  'connectioninformation.enabled': '0'
+#  'connectors.default_auth_mechanism': ''
+#  'connectors.enable_new': '0'
+#  'connectors.sources.enable_new': '1'
+#  'crash.enabled': '1'
+#  'creditprofile.enabled': '0'
+#  'digiposte.enabled': '0'
+#  'documents.accepted_types': '*'
+#  'documents.force_ocr': '0'
+#  'documents.force_pdf': '0'
+#  'forecasts.enabled': '0'
+#  'gmaps.enabled': '0'
+#  'gmaps.key': ''
+#  'hashtable.enabled': '0'
+#  'inapp.enabled': '0'
+#  'inapp.google_key': ''
+#  'inapp.iab': '{"com.budgea.premium1m": 1
+# "com.budgea.premium3m": 3
+# "com.budgea.premium1y": 12}'
+#  'inapp.iap': '{"com.budgea.premium1M": 1
+# "com.budgea.premium3M": 3
+# "com.budgea.premium1Y": 12}'
+#  'mails.enabled': '0'
+#  'merchant.enabled': '0'
+#  'merchant.webview.baseurl': ''
+#  'oauth2.enabled': '1'
+#  'oidc.audience': ''
+#  'oidc.client': ''
+#  'oidc.enabled': '0'
+#  'oidc.jwks': ''
+#  'oidc.whitelist.enabled': '0'
+#  'premium.enabled': '0'
+#  'premium.invites_needed': '3'
+#  'premium.send_offers': '0'
+#  'projects.enabled': '0'
+#  'providers.enabled': '0'
+#  'push.apn_cert': ''
+#  'push.apn_sandbox_cert': ''
+#  'push.enabled': '0'
+#  'push.gcm_key': ''
+#  'push.gcm_server': ''
+#  'rate.enabled': '0'
+#  'redgreen.enabled': '0'
+#  'regulation.email': 'compliance@budget-insight.com'
+#  'regulation.transfer.amount_warning': '100'
+#  'reporting.enabled': '1'
+#  'root.app': 'root-app'
+#  'root.app_name': 'root-app-name'
+#  'root.baseurl': 'https://www.budgea.com'
+#  'root.prefix': '/%(version)s/'
+#  'stet.access_token_duration': '1800'
+#  'stet.connector': '338178e6-3d01-564f-9a7b-52ca442459bf'
+#  'stet.enabled': '0'
+#  'stet.oauth_uri': 'https://demo.biapi.pro/2.0/auth/webview/connect'
+#  'stet.refresh_token_duration': '7776000'
+#  'stet.signature_check': '1'
+#  'stet.uri_baseurl': 'https://demo.biapi.pro/2.0/auth/webview'
+#  'transfer.beneficiary_label': 'UNKNOWN'
+#  'transfer.default_label': 'BUDGEA API'
+#  'transfer.enabled': '0'
+#  'transfer.max_amount': '0'
+#  'transfer.max_days_matching_transaction': '7'
+#  'transfer.max_period_amount': '0'
+#  'transfer.max_period_days': '0'
+#  'transfer.recipient.iban_white_list.enabled': '0'
+#  'transfer.recipient.iban_white_list.entries': 'AT
+# BE
+# BG
+# CH
+# CY
+# CZ
+# DE
+# DK
+# EE
+# ES
+# FI
+# FR
+# GB
+# GR
+# HR
+# HU
+# IE
+# IS
+# IT
+# LI
+# LT
+# LU
+# LV
+# MC
+# MT
+# NL
+# NO
+# PL
+# PT
+# RO
+# SE
+# SI
+# SK
+# SM'
+#  'user.synced_devices': 'web
+# iPad
+# iPhone
+# Android
+# CAstore'
+#  'wealth.detail': '0'
+#  'wealth.enabled': '1'
+#  'wealth.find_missing_isin': '0'
+#  'wealth.get_liquidity': '1'
+#  'wealth.vdate_nullable': '0'
+#  'webhooks.ca_cert': ''
+#  'webhooks.compression.enabled': '0'
+#

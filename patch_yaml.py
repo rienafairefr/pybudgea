@@ -1,90 +1,8 @@
-import re
+import json
 
 import yaml
-from inflection import camelize
 
-from utils import parser
-
-
-def nested_set(dic, keys, value):
-    for key in keys[:-1]:
-        dic = dic.setdefault(key, {})
-    dic[keys[-1]] = value
-
-
-def visit_tree(stack, func, r):
-    for k, v in r.items():
-        if isinstance(v, dict):
-            r[k] = func(stack, k, v)
-            stack.append(k)
-            visit_tree(stack, func, v)
-            stack.pop()
-
-
-def sanitize_value(value, replace_match, replace_value, exception_list):
-    if len(exception_list) == 0 or replace_match not in exception_list:
-        return value.replace(replace_match, replace_value)
-    return value
-
-
-def sanitize_name(name, remove_char_regex=r'\W', exception_list=None):
-    exception_list = exception_list or []
-    if name is None:
-        return 'ERROR_UNKNOWN'
-    if name == '$':
-        return 'value'
-
-    name = sanitize_value(name, r'\[\]', "", exception_list)
-
-    # input[] => input
-    name = sanitize_value(name, r"\[\]", "", exception_list)
-
-    # input[a][b] => input_a_b
-    name = sanitize_value(name, r"\[", "_", exception_list)
-    name = sanitize_value(name, r"\]", "", exception_list)
-
-    # input(a)(b) => input_a_b
-    name = sanitize_value(name, r"\(", "_", exception_list)
-    name = sanitize_value(name, r"\)", "", exception_list)
-
-    # input.name => input_name
-    name = sanitize_value(name, r"\.", "_", exception_list)
-
-    # input-name => input_name
-    name = sanitize_value(name, "-", "_", exception_list)
-
-    # a|b => a_b
-    name = sanitize_value(name, r"\|", "_", exception_list)
-
-    # input name and age => input_name_and_age
-    name = sanitize_value(name, " ", "_", exception_list)
-
-    # /api/films/get => _api_films_get
-    # \api\films\get => _api_films_get
-    name = name.replace("/", "_")
-    name = name.replace(r"\\", "_")
-
-    # remove everything else other than word, number and _
-    # $php_variable => php_variable
-    name = re.sub(remove_char_regex, "", name)
-    return name
-
-
-def autogen_operation_id(path, http_method):
-    tmp_path = path.replace('\{', "")
-    tmp_path = tmp_path.replace('\}', "")
-    parts = (tmp_path + '/' + http_method).split('/')
-    builder = ""
-    if tmp_path == '/':
-        builder += 'root'
-    for part in parts:
-        if len(part) > 0:
-            if len(builder) == 0:
-                part = part[0].lower() + part[1:]
-            else:
-                part = camelize(part)
-            builder += part
-    return sanitize_name(builder)
+from utils import parser, nested_set, visit_tree
 
 
 def step_change(openapi):
@@ -134,8 +52,6 @@ def step_change(openapi):
 
     def treat_node(stack, key, node):
         if len(stack) == 2 and stack[0] == 'paths':
-            if 'operationId' not in node:
-                node['operationId'] = autogen_operation_id(stack[-1], key)
             if 'parameters' in node:
                 parameters = node['parameters']
                 for param in parameters:
@@ -150,7 +66,13 @@ def step_change(openapi):
             if 'properties' in node:
                 for k, v in node['properties'].items():
                     if v.get('type') == 'object' and v.get('title') is None:
-                        v['title'] = key + k.capitalize()
+                        # should have been inlined
+                        json_path = '/%s/%s/properties/%s' % ('/'.join(stack), key, k)
+
+                        print('should be added to the json-patch:' + json.dumps({
+                            'op': 'replace', 'path': json_path,
+                            'value': {'#ref': '$/components/schemas/****'}
+                        }))
         remapped_ref = remap.get(node.get('$ref'))
         if remapped_ref is not None:
             node['$ref'] = remapped_ref

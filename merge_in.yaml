@@ -45,11 +45,8 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                keys:
-                  description: list of comma separated keys to be deleted.
-                  type: string
+              $ref: "#/components/schemas/UserConfigKeys"
+
     post:
       x-codegen-request-body-name: config
       requestBody:
@@ -83,18 +80,42 @@ components:
                 Your server implementation should return this HTTP status code
                 if the data was received successfully
   schemas:
+    ConnectionInformations:
+      type: object
+      properties:
+        connections:
+          items:
+            $ref: '#/components/schemas/Connection'
+          type: array
+        total:
+          description: total number of results
+          type: number
+      required:
+        - connections
+
+    UserToken:
+      type: object
+      properties:
+        token:
+          type: string
+
+    UserConfigKeys:
+      type: object
+      properties:
+        keys:
+          description: list of comma separated keys to be deleted.
+          type: string
+
     Connection:
       properties:
         bank:
           $ref: '#/components/schemas/ConnectionBank'
         informations:
-          type: object
-          title: ConnectionInformations
+          $ref: '#/components/schemas/ConnectionInformations'
         subscriptions:
           type: array
           items:
-            type: object
-            title: ConnectionSubscription
+            $ref: '#/components/schemas/Subscription'
         accounts:
           type: array
           items:
@@ -129,6 +150,100 @@ components:
           nullable: true
         connector:
           $ref: "#/components/schemas/ConnectionBank"
+
+    UserResume:
+      example:
+        last_resume: '2018-07-10 10:08:39'
+        newsletter_enabled: true
+        promotion_enabled: true
+        resume_enabled: true
+        resume_frequency: 7
+      properties:
+        last_resume:
+          format: datetime
+          type: string
+        newsletter_enabled:
+          type: boolean
+        promotion_enabled:
+          type: boolean
+        resume_enabled:
+          type: boolean
+        resume_frequency:
+          format: datetime
+          type: string
+      type: object
+
+    CategorizeData:
+      type: object
+      example:
+        failed: 1
+        total: 2
+        transactions:
+          - id_category: 84
+            state: categorized_by_keyword
+            type: card
+            value: -14
+            wording: 'the great restaurant  '
+          - id_category: 9998
+            state: fail_categorizing
+            type: card
+            value: -14
+            wording: toto
+      properties:
+        failed:
+          type: integer
+        total:
+          type: integer
+        transactions:
+          items:
+            $ref: '#/components/schemas/CategorizeTransaction'
+          type: array
+
+
+    CategorizeTransaction:
+      type: object
+      properties:
+        id_category:
+          type: integer
+        state:
+          type: string
+        type:
+          type: string
+        value:
+          type: number
+          format: float
+        wording:
+          type: string
+
+    AuthJwtPayloadPayload:
+      type: object
+      properties:
+        id_user:
+          type: integer
+        aud:
+          type: string
+        iss:
+          type: integer
+        exp:
+          type: integer
+        iat:
+          type: integer
+        scope:
+          type: string
+        type:
+          type: string
+
+    AuthJwtPayload:
+      type: object
+      properties:
+        jwt_token:
+          type: string
+        payload:
+          $ref: "#/components/schemas/AuthJwtPayloadPayload"
+
+
+    AuthTokenCodeType:
+      type: string
 
     ConnectionBank:
       type: object
@@ -210,6 +325,32 @@ components:
         marketcap: null
         datetime: null
         id: "EUR"
+
+    AccountsAlert:
+      type: object
+      example:
+        example:
+          balance_min1: 500
+          balance_min2: 0
+          enabled: true
+          expense_max: 500
+          income_max: 500
+      properties:
+        balance_min1:
+          format: float
+          type: number
+        balance_min2:
+          format: float
+          type: number
+        enabled:
+          type: boolean
+        expense_max:
+          format: float
+          type: number
+        income_max:
+          format: float
+          type: number
+
     Config:
       type: object
       properties:
@@ -644,13 +785,11 @@ components:
         recipients:
           type: array
           items:
-            type: object
-            title: ConnectionAccountRecipient
+            $ref: "#/components/schemas/Recipient"
         transactions:
           type: array
           items:
-            type: object
-            title: ConnectionAccountTransaction
+            $ref: "#/components/schemas/Transaction"
         deleted:
           type: string
           nullable: true
@@ -675,8 +814,7 @@ components:
         transfers:
           type: array
           items:
-            type: object
-            title: ConnectionAccountTransfer
+            $ref: "#/components/schemas/Transfer"
         id_user:
           type: integer
         name:
@@ -692,8 +830,7 @@ components:
         investments:
           type: array
           items:
-            type: object
-            title: ConnectionAccountInvestment
+            $ref: '#/components/schemas/UserInvestments'
 
     UserBalance:
       type: object

@@ -31,8 +31,11 @@ openapi_06.yaml: openapi_05.yaml patch_yaml.py
 openapi_10.yaml: openapi_06.yaml merge_in.yaml merge_in_yaml.py
 	pipenv run python merge_in_yaml.py -i openapi_06.yaml -o openapi_10.yaml -m merge_in.yaml
 
-openapi.yaml: openapi_10.yaml diff_openapi.json patch_diff_yaml.py
-	pipenv run python patch_diff_yaml.py -i openapi_10.yaml -o openapi.yaml -d diff_openapi.json
+openapi_20.yaml: openapi_10.yaml patch_autogen.py
+	pipenv run python patch_autogen.py -i openapi_10.yaml -o openapi_20.yaml
+
+openapi.yaml: openapi_20.yaml diff_openapi.json patch_diff_yaml.py
+	pipenv run python patch_diff_yaml.py -i openapi_20.yaml -o openapi.yaml -d diff_openapi.json
 
 docker_image: $(wildcard generator/**/*) $(wildcard generator/*)
 	docker build -t pybudgea-custom-codegen generator
@@ -40,9 +43,9 @@ docker_image: $(wildcard generator/**/*) $(wildcard generator/*)
 clean_api:
 	rm -rf api
 
-api: openapi_2.yaml Makefile $(wildcard templates/**/*) $(wildcard templates/*) docker_image
+api: openapi.yaml Makefile $(wildcard templates/**/*) $(wildcard templates/*) docker_image
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local pybudgea-custom-codegen \
-	           generate -i /local/openapi_2.yaml \
+	           generate -i /local/openapi.yaml \
 	           -t /local/templates \
 	           --git-user-id rienafairefr \
 	           --git-repo-id pybudgea \
