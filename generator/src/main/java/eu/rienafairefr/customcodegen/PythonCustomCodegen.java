@@ -9,7 +9,6 @@ import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,14 +57,6 @@ public class PythonCustomCodegen extends PythonClientCodegen {
                 refSchema = allDefinitions.get(ref);
             } else {
                 LOGGER.warn("allDefinitions not defined in toExampleValue!\n");
-            }
-        }
-
-        if (StringUtils.isNotBlank(example) && !"null".equals(example)) {
-            if (!ModelUtils.isObjectSchema(schema)) {
-                if (refSchema == null || !ModelUtils.isObjectSchema(refSchema)) {
-                    return example;
-                }
             }
         }
 
