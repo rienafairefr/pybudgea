@@ -111,8 +111,9 @@ def step_change(openapi):
 
 args = parser.parse_args()
 
-with open(args.input, 'r') as input_yaml,\
-        open(args.output, 'w') as output_yaml:
+with open(args.input, 'r') as input_yaml:
     openapi_content = yaml.load(input_yaml, Loader=yaml.SafeLoader)
     openapi_content = step_change(openapi_content)
+
+with open(args.output, 'w') as output_yaml:
     yaml.dump(openapi_content, output_yaml, indent=2)
