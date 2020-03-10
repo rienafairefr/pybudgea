@@ -12,12 +12,12 @@ clean:
 	rm -f openapi_patched.yaml
 	rm -f swagger_patched.json
 
-swagger_0.json: swagger.json
-	pipenv run python patch_json.py
+swagger_00.json: swagger.json
+	pipenv run python patch_json.py -i swagger.json -o swagger_00.json
 
-openapi_00.yaml: swagger_patched.json
+openapi_00.yaml: swagger_00.json
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
-	           generate -i /local/swagger_patched.json \
+	           generate -i /local/swagger_00.json \
 	           -g openapi-yaml -o /local/openapi-yaml
 	cp openapi-yaml/openapi/openapi.yaml openapi_00.yaml
 	rm -rf openapi-yaml

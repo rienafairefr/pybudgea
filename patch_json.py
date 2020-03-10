@@ -1,5 +1,7 @@
 import json
 
+from utils import parser
+
 
 def step0(swagger):
     for path, node in swagger['paths'].items():
@@ -18,8 +20,11 @@ def step0(swagger):
     return swagger
 
 
-with open('swagger_0.json', 'w') as swagger_patched_json,\
-        open('swagger.json', 'r') as swagger_json:
+args = parser.parse_args()
+
+with open(args.input, 'r') as swagger_json:
     swagger_content = json.load(swagger_json)
     swagger_content = step0(swagger_content)
+
+with open(args.output, 'w') as swagger_patched_json:
     json.dump(swagger_content, swagger_patched_json, indent=2)
