@@ -90,8 +90,6 @@ components:
         total:
           description: total number of results
           type: number
-      required:
-        - connections
 
     UserToken:
       type: object
@@ -115,7 +113,7 @@ components:
         subscriptions:
           type: array
           items:
-            $ref: '#/components/schemas/Subscription'
+            $ref: '#/components/schemas/ConnectionSubscription'
         accounts:
           type: array
           items:
@@ -316,6 +314,7 @@ components:
         charged:
           type: boolean
     Currency:
+      nullable: true
       example:
         name: "Euro"
         symbol: "€"
@@ -674,6 +673,59 @@ components:
         incomes:
           type: number
           format: float
+
+    ConnectionSubscription:
+      type: object
+      properties:
+        id_source:
+          type: integer
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+        id_user:
+          type: integer
+        deleted:
+          type: string
+          format: datetime
+          nullable: true
+        id_connection:
+          type: integer
+        number:
+          type: string
+        validity:
+          type: string
+          nullable: true
+        label:
+          type: string
+        subscriber:
+          type: string
+        currency:
+          $ref: "#/components/schemas/Currency"
+        disabled:
+          type: string
+          format: datetime
+          nullable: true
+        error:
+          type: string
+          nullable: true
+        id:
+          type: integer
+        formatted_balance:
+          type: string
+          nullable: true
+        renewdate:
+          type: string
+          format: datetime
+          nullable: true
+        balance:
+          type: number
+          format: float
+          nullable: true
+        last_update:
+          type: string
+          format: datetime
+
     ConnectionAccountLoan:
       type: object
       nullable: true
@@ -792,6 +844,7 @@ components:
             $ref: "#/components/schemas/Transaction"
         deleted:
           type: string
+          format: datetime
           nullable: true
         id_parent:
           type: integer
