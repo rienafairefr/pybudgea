@@ -17,14 +17,14 @@ nok = []
 for api in apis:
     if api.endswith('Api'):
         api_class = getattr(budgea, api)
+        clients = {
+            'client': get_client(APPLICATION_CREDENTIALS['user']['budgea']['access_token']),
+            'manage_users': get_client(APPLICATION_CREDENTIALS['budgea']['manage']['users']),
+            'manage_config': get_client(APPLICATION_CREDENTIALS['budgea']['manage']['config']),
+            'manage_facturation': get_client(APPLICATION_CREDENTIALS['budgea']['manage']['facturation']),
+        }
 
-        user_client = get_client(APPLICATION_CREDENTIALS['user']['budgea']['access_token'])
-        admin_client_users = get_client(APPLICATION_CREDENTIALS['budgea']['manage']['users'])
-        admin_client_config = get_client(APPLICATION_CREDENTIALS['budgea']['manage']['config'])
-        admin_client_facturation = get_client(APPLICATION_CREDENTIALS['budgea']['manage']['facturation'])
-
-        instance = api_class(api_client=user_client)
-        methods = [m for m in dir(instance) if m.endswith('_get')]
+        methods = [m for m in dir(api_class) if m.endswith('_get')]
 
         # kwargs = dict(_preload_content=False)
         id_client = 95221982
@@ -46,47 +46,44 @@ for api in apis:
         id_recipient = 1
         type = 'test'
         key = 'key'
-        client = user_client
+        for k, client in clients.items():
+            instance = api_class(api_client=client)
+            for method in methods:
+                bounded_method = getattr(instance, method)
+                signature = inspect.signature(bounded_method)
+                src = inspect.getsource(getattr(instance, method+'_with_http_info'))
+                idx = src.index('self.api_client.call_api(')
+                src = src[idx+26:].strip()[1:]
+                idx = src.index("'")
+                endpoint = src[:idx]
+                kwargs = dict()
+                string_value = '%s(api_client=client).%s%s' % (api, method, signature)
+                print(string_value)
+                try:
+                    data = eval(string_value)
+                except ApiException as e:
+                    print(e)
+                    nok.append([k, api, method, endpoint])
+                except ValidationError as e:
+                    print(e)
+                    return_type = None
+                    for l in inspect.getdoc(bounded_method).splitlines():
+                        if ':return:' in l:
+                            return_type = l.split(':return:')[1].strip()
+                            if hasattr(budgea.models, return_type):
+                                break
+                    for field_name, messages in e.messages.items():
+                        if Field.default_error_messages['null'] in messages and return_type:
+                            schema_type = '/components/schemas/%s' % return_type
+                            print('{"op": "add", "path": "%s/properties/%s/nullable", "value": true},' % (schema_type, field_name))
 
-        for method in methods:
-            bounded_method = getattr(instance, method)
-            signature = inspect.signature(bounded_method)
-            src = inspect.getsource(getattr(instance, method+'_with_http_info'))
-            idx = src.index('self.api_client.call_api(')
-            src = src[idx+26:].strip()[1:]
-            idx = src.index("'")
-            endpoint = src[:idx]
-            kwargs = dict()
-            string_value = '%s(api_client=client).%s%s' % (api, method, signature)
-            print(string_value)
-            try:
-                data = eval(string_value)
-            except ApiException as e:
-                print(e)
-                nok.append([api, method, endpoint])
-            except ValidationError as e:
-                print(e)
-                return_type = None
-                for l in inspect.getdoc(bounded_method).splitlines():
-                    if ':return:' in l:
-                        return_type = l.split(':return:')[1].strip()
-                        if hasattr(budgea.models, return_type):
-                            break
-                for field_name, messages in e.messages.items():
-                    if Field.default_error_messages['null'] in messages and return_type:
-                        schema_type = '/components/schemas/%s' % return_type
-                        print('{"op": "add", "path": "%s/properties/%s/nullable", "value": true},' % (schema_type, field_name))
-
-                nok.append([api, method, endpoint])
-            # print(data)
-            ok.append([api, method, endpoint])
+                    nok.append([k, api, method, endpoint])
+                # print(data)
+                ok.append([k, api, method, endpoint])
 
 
 print('OK:')
-tabulate(ok)
+print(tabulate(sorted(ok, key=lambda r: r[3])))
 print('NOK:')
-tabulate(nok)
+print(tabulate(sorted(nok, key=lambda r: r[3])))
 
-
-
-#print(tabulate(results))
