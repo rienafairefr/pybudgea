@@ -21,7 +21,6 @@ coveralls = "*"
 pytest-cov = "*"
 setuptools_scm = "*"
 inflection = "*"
-pybudgea = {editable = true,path = "./api"}
 jsondiff = "*"
 jsonpatch = "*"
 tabulate = "*"

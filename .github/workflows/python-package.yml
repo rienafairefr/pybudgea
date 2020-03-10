@@ -22,6 +22,8 @@ jobs:
       run: pipenv install
     - name: generate code
       run: make api
+    - name: install Package under test
+      run: pipenv install --editable api
     - name: Test with pytest
       run: pipenv run pytest --cov=api
     - name: Coveralls
@@ -44,6 +46,8 @@ jobs:
       run: pipenv --python 3.5 install
     - name: generate code
       run: make api
+    - name: install Package under test
+      run: pipenv install --editable api
     - name: Build package sdist
       run: |
         cd api
