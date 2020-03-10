@@ -97,7 +97,7 @@
   {"op": "add", "path":  "/components/schemas/Document/properties/total_amount/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Document/properties/thumb_url", "value":  {"type":  "string", "format":  "uri"}},
   {"op": "add", "path":  "/components/schemas/Document/properties/url", "value":  {"type":  "string", "format":  "uri"}},
-  {"op": "add", "path":  "/components/schemas/Document/properties/type", "value":  {"type":  "string", "enum":  ["statement", "report"]}},
+  {"op": "add", "path":  "/components/schemas/Document/properties/type", "value":  {"type":  "string", "enum":  ["statement", "report", "other"]}},
   {"op": "add", "path":  "/components/schemas/Transaction/properties/original_gross_value/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Transaction/properties/commission/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Transaction/properties/card/nullable", "value":  true},
@@ -112,7 +112,7 @@
   {"op": "add", "path":  "/components/schemas/Transaction/properties/new", "value":  {"type":  "boolean"}},
   {
     "op": "add", "path":  "/components/schemas/Transaction/properties/type",
-    "value": {"type":  "string", "enum":  ["card", "transfer", "order", "bank", "payback", "check", "withdrawal"]}
+    "value": {"type":  "string", "enum":  ["card", "transfer", "order", "bank", "payback", "check", "withdrawal", "unknown"]}
   },
   {"op": "add", "path":  "/components/schemas/Transaction/properties/nopurge", "value":  {"type":  "integer"}},
   {"op": "add", "path":  "/components/schemas/Transaction/properties/formatted_value", "value":  {"type":  "string"}},
@@ -202,5 +202,34 @@
   },
   {"op": "add", "path":  "/components/schemas/Client/properties/id_logo/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Group/properties/id_logo/nullable", "value":  true},
-  {"op": "remove", "path":  "/components/schemas/Client/required/5"}
+  {"op": "remove", "path":  "/components/schemas/Client/required/4"},
+
+  {"op": "add", "path": "/components/schemas/AccountType/properties/id_parent/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/AccountType/properties/color/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/Connector/properties/sync_frequency/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/Connector/properties/siret/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/Connector/properties/months_to_fetch/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/Connector/properties/code/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectorSource/properties/disabled/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectorSource/properties/fallback/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionLog/properties/error_message/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionLog/properties/error/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionLog/properties/error_uid/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionLog/properties/fields/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/Account/properties/ownership/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/AccountLog/properties/error_message/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/AccountLog/properties/error/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionSource/properties/state/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionSource/properties/expire/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionSource/properties/disabled/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/ConnectionSource/properties/access_expire/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/Profile/properties/lang/nullable", "value": true},
+  {"op": "add", "path": "/components/schemas/UserResume/properties/last_resume/nullable", "value": true},
+
+  {"op": "remove", "path":  "/components/schemas/ProviderLogosThumbnail/required"},
+  {"op": "remove", "path":  "/components/schemas/UserOperationsalert/required"},
+  {"op": "remove", "path":  "/components/schemas/UserCategoriesFull/required"},
+  {"op": "remove", "path":  "/components/schemas/UserTerms/required"},
+  {"op": "remove", "path":  "/components/schemas/Profile/required/5"}
+
 ]

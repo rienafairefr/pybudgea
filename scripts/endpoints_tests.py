@@ -3,6 +3,7 @@ import inspect
 import budgea
 from budgea import ApiException
 from marshmallow import ValidationError
+from marshmallow.fields import Field
 from tabulate import tabulate
 from budgea.api import *
 
@@ -65,12 +66,20 @@ for api in apis:
                 nok.append([api, method, endpoint])
             except ValidationError as e:
                 print(e)
+                return_type = None
+                for l in inspect.getdoc(bounded_method).splitlines():
+                    if ':return:' in l:
+                        return_type = l.split(':return:')[1].strip()
+                        if hasattr(budgea.models, return_type):
+                            break
+                for field_name, messages in e.messages.items():
+                    if Field.default_error_messages['null'] in messages and return_type:
+                        schema_type = '/components/schemas/%s' % return_type
+                        print('{"op": "add", "path": "%s/properties/%s/nullable", "value": true},' % (schema_type, field_name))
+
                 nok.append([api, method, endpoint])
-            print(data)
-            if data.status == 200:
-                ok.append([api, method, endpoint])
-            else:
-                nok.append([api, method, endpoint])
+            # print(data)
+            ok.append([api, method, endpoint])
 
 
 print('OK:')
