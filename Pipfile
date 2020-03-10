@@ -24,3 +24,4 @@ inflection = "*"
 pybudgea = {editable = true,path = "./api"}
 jsondiff = "*"
 jsonpatch = "*"
+tabulate = "*"
