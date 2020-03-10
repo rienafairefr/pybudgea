@@ -119,6 +119,7 @@
   {"op": "add", "path":  "/components/schemas/Transaction/properties/informations", "value":  {"$ref":  "#/components/schemas/UserTransactionInformations"}},
   {"op": "add", "path":  "/components/schemas/Transaction/properties/category", "value":  {"$ref":  "#/components/schemas/Category"}},
   {"op": "add", "path":  "/components/schemas/Transaction/properties/webid/nullable", "value":  true},
+  {"op": "add", "path":  "/components/schemas/Transaction/properties/vdate/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Currency/properties/marketcap/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Currency/properties/datetime/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Currency/properties/name", "value":  {"type":  "string", "nullable":  true}},
@@ -137,5 +138,69 @@
   {"op": "add", "path":  "/components/schemas/Account/properties/disabled/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Account/properties/error/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Account/properties/deleted/nullable", "value":  true},
-  {"op": "add", "path":  "/components/schemas/Account/properties/coming/nullable", "value":  true}
+  {"op": "add", "path":  "/components/schemas/Account/properties/coming/nullable", "value":  true},
+  {"op": "add", "path":  "/components/schemas/Account/properties/id_parent/nullable", "value":  true},
+  {"op": "add", "path":  "/components/schemas/Account/properties/iban/nullable", "value":  true},
+  {"op": "add", "path":  "/components/schemas/Account/properties/iban/nullable", "value":  true},
+  {"op": "add", "path":  "/components/schemas/Banks/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/Categories/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/ConfigLogs/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/ConnectionInformations/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/Connectors/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/Documenttypes/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/FinanceSecurities/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/Merchants/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/ProviderLogosThumbnail/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/ProviderSources/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/Providers/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserAccountHistory/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserAccount_types/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserAlerts/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserCategoriesFull/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserConnectionAccountLogs/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserConnectionAccounts/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserConnectionInformations/properties/total/type", "value":  "integer"},
+  {"op": "add", "path":  "/components/schemas/UserConnectionSources/properties/total/type", "value":  "integer"},
+  {"op": "add", "path": "/paths/~1users~1{id_user}~1transactionsclusters/post/requestBody",
+    "value": {"content":  {"multipart/form-data":   {"schema": {
+      "properties": {
+          "next_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "mean_amount": {
+            "type": "number",
+            "format": "float"
+          },
+          "wording": {
+            "type": "string"
+          },
+          "id_account": {
+            "type": "integer"
+          }
+      },
+      "required": ["next_date", "mean_amount", "wording", "id_account"]
+    }}}}
+  },
+  {"op": "add", "path": "/paths/~1users~1{id_user}~1accounts~1{id_account}~1transactionsclusters/post/requestBody",
+    "value": {"content":  {"multipart/form-data":   {"schema": {
+      "properties": {
+          "next_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "mean_amount": {
+            "type": "number",
+            "format": "float"
+          },
+          "wording": {
+            "type": "string"
+          }
+      },
+      "required":  ["next_date", "mean_amount", "wording"]
+    }}}}
+  },
+  {"op": "add", "path":  "/components/schemas/Client/properties/id_logo/nullable", "value":  true},
+  {"op": "add", "path":  "/components/schemas/Group/properties/id_logo/nullable", "value":  true},
+  {"op": "remove", "path":  "/components/schemas/Client/required/5"}
 ]

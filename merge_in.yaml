@@ -89,7 +89,7 @@ components:
           type: array
         total:
           description: total number of results
-          type: number
+          type: integer
 
     UserToken:
       type: object
