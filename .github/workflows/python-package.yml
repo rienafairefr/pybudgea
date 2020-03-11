@@ -82,6 +82,7 @@ jobs:
     - name: Twine check
       run: pipenv run twine check api/dist/*
     - name: test upload
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.testpypi_password }}
