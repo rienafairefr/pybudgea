@@ -87,4 +87,4 @@ with open(args.input, 'r') as input_yaml:
     openapi_content = step_autogen(openapi_content)
 
 with open(args.output, 'w') as output_yaml:
-    yaml.dump(openapi_content, output_yaml, indent=2)
+    yaml.safe_dump(openapi_content, output_yaml, indent=2)

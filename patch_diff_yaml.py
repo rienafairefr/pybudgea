@@ -14,4 +14,4 @@ with open(args.diff, 'r') as patch_file, \
     json_patch.apply(openapi, in_place=True)
 
 with open(args.output, 'w') as output_yaml:
-    yaml.dump(openapi, output_yaml, indent=2)
+    yaml.safe_dump(openapi, output_yaml, indent=2)

@@ -125,4 +125,4 @@ with open(args.input, 'r') as input_yaml:
     jp.apply(openapi_content, in_place=True)
 
 with open(args.output, 'w') as output_yaml:
-    yaml.dump(openapi_content, output_yaml, indent=2)
+    yaml.safe_dump(openapi_content, output_yaml, indent=2)

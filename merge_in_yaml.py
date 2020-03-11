@@ -28,4 +28,4 @@ with open(args.input, 'r') as input_yaml,\
     updated_openapi = update(openapi, merge_in)
 
 with open(args.output, 'w') as output_yaml:
-    yaml.dump(updated_openapi, output_yaml, indent=2)
+    yaml.safe_dump(updated_openapi, output_yaml, indent=2)
