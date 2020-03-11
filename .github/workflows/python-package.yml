@@ -23,7 +23,9 @@ jobs:
     - name: generate code
       run: make api
     - name: install Package under test
-      run: pipenv install --editable api
+      run: |
+        pipenv install --editable api
+        pipenv run pip freeze
     - name: Test with pytest
       run: pipenv run pytest --cov=api
     - name: Coveralls
