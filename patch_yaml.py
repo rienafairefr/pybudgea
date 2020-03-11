@@ -113,7 +113,6 @@ args = parser.parse_args()
 with open(args.input, 'r') as input_yaml:
     openapi_content = yaml.load(input_yaml, Loader=yaml.SafeLoader)
     patch = step_change(openapi_content)
-    pprint(patch)
     jp = jsonpatch.JsonPatch(patch)
     jp.apply(openapi_content, in_place=True)
 
