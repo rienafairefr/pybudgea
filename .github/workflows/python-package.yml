@@ -69,10 +69,12 @@ jobs:
     - uses: dschep/install-pipenv-action@v1
     - name: Install dependencies
       run: pipenv --python 3.5 install
-    - name: generate code
-      run: make api
-    - name: install Package under test
-      run: pipenv install --editable api
+
+    - uses: actions/download-artifact@master
+      with:
+        name: generated-api
+        path: api
+
     - name: Build package
       run: |
         cd api
