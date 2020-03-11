@@ -21,21 +21,27 @@ openapi_00.yaml: swagger_00.json
 	           -g openapi-yaml -o /local/openapi-yaml
 	cp openapi-yaml/openapi/openapi.yaml openapi_00.yaml
 	rm -rf openapi-yaml
+	cat openapi_.yaml
 
 openapi_05.yaml: openapi_00.yaml merge_in_yaml.py merge_in_0.yaml
 	pipenv run python merge_in_yaml.py -i openapi_00.yaml -o openapi_05.yaml -m merge_in_0.yaml
+	cat openapi_05.yaml
 
 openapi_06.yaml: openapi_05.yaml patch_yaml.py
 	pipenv run python patch_yaml.py -i openapi_05.yaml -o openapi_06.yaml
+	cat openapi_06.yaml
 
 openapi_10.yaml: openapi_06.yaml merge_in.yaml merge_in_yaml.py
 	pipenv run python merge_in_yaml.py -i openapi_06.yaml -o openapi_10.yaml -m merge_in.yaml
+	cat openapi_10.yaml
 
 openapi_20.yaml: openapi_10.yaml patch_autogen.py
 	pipenv run python patch_autogen.py -i openapi_10.yaml -o openapi_20.yaml
+	cat openapi_20.yaml
 
 openapi.yaml: openapi_20.yaml diff_openapi.json patch_diff_yaml.py
 	pipenv run python patch_diff_yaml.py -i openapi_20.yaml -o openapi.yaml -d diff_openapi.json
+	cat openapi.yaml
 
 docker_image: $(wildcard generator/**/*) $(wildcard generator/*)
 	docker build -t pybudgea-custom-codegen generator
