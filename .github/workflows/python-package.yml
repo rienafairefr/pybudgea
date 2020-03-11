@@ -3,8 +3,26 @@ name: Python package
 on: [push, pull_request]
 
 jobs:
-  test:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python 3.5
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.5
+      - uses: dschep/install-pipenv-action@v1
+      - name: Install dependencies
+        run: pipenv install --python 3.5
+      - name: generate code
+        run: make api
+      - uses: actions/upload-artifact@master
+        with:
+          name: generated-api
+          path: api
 
+  test:
+    needs: generate
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -20,8 +38,12 @@ jobs:
     - uses: dschep/install-pipenv-action@v1
     - name: Install dependencies
       run: pipenv install --python ${{ matrix.python-version }}
-    - name: generate code
-      run: make api
+
+    - uses: actions/download-artifact@master
+      with:
+        name: generated-api
+        path: api
+
     - name: install Package under test
       run: |
         pipenv install --editable api
@@ -34,8 +56,9 @@ jobs:
       run: pipenv run coveralls
 
   publish:
-    needs: test
-
+    needs:
+      - test
+      - generate
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -69,3 +92,16 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.pypi_password }}
       run: |
         pipenv run twine upload api/dist/*
+
+
+  cleanup_job:
+    needs: publish
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: call webhook to delete artifacts
+      env:
+        FOR_WEBHOOKS_SECRET: ${{ secrets.FOR_WEBHOOKS_SECRET }}
+      run: |
+        echo "::add-mask::$FOR_WEBHOOKS_SECRET"
+        curl --verbose --fail --show-error --location --request POST "https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches" --header "Authorization: token $FOR_WEBHOOKS_SECRET" --header 'Content-Type: application/json' --header 'Accept: application/vnd.github.everest-preview+json' --data-raw "{ \"event_type\": \"delete_all_artifacts\", \"client_payload\": {\"parent_runid\": \"$GITHUB_RUN_ID\", \"parent_repo\": \"$GITHUB_REPOSITORY\"} }"
