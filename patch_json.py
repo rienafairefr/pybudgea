@@ -27,4 +27,4 @@ with open(args.input, 'r') as swagger_json:
     swagger_content = step0(swagger_content)
 
 with open(args.output, 'w') as swagger_patched_json:
-    json.safe_dump(swagger_content, swagger_patched_json, indent=2)
+    json.dump(swagger_content, swagger_patched_json, indent=2)
