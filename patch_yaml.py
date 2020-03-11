@@ -1,11 +1,16 @@
+import copy
 import json
+from pprint import pprint
 
+import jsonpatch
 import yaml
 
-from utils import parser, nested_set, visit_tree
+from utils import parser, visit_tree
 
 
 def step_change(openapi):
+    patch = []
+
     def remapped():
         inline_schemas = []
         for schema in openapi['components']['schemas']:
@@ -14,8 +19,9 @@ def step_change(openapi):
 
         def inner_remapped(op):
             for k, v in openapi['paths'].items():
-                ref = v.get(op, {}).get('responses', {}).get('200', {}).get('content', {}).get('application/json', {}).get(
-                    'schema', {}).get('$ref')
+                ref = v.get(op, {}).get('responses', {})\
+                    .get('200', {}).get('content', {}).get('application/json',{})\
+                    .get('schema', {}).get('$ref')
                 if ref and ref in inline_schemas:
                     newRef = k.replace('/users/{id_user}', 'User')
                     newRef = newRef.replace('/connections/{id_connection}', 'Connection')
@@ -40,7 +46,7 @@ def step_change(openapi):
         for op in ('get', 'post'):
             for p, v in inner_remapped(op):
                 yield openapi['paths'][p][op]['responses']['200']['content']['application/json']['schema'][
-                    '$ref'], '#/components/schemas/%s' % v
+                          '$ref'], '#/components/schemas/%s' % v
 
     remap = dict(remapped())
 
@@ -53,67 +59,70 @@ def step_change(openapi):
     def treat_node(stack, key, node):
         if len(stack) == 2 and stack[0] == 'paths':
             if 'parameters' in node:
-                parameters = node['parameters']
-                for param in parameters:
+                for idx, param in enumerate(node['parameters']):
                     if param['name'] == 'expand':
-                        param['required'] = False
-            node['security'] = [
-                {'Authorization': []}
-            ]
+                        patch.append({
+                            "op": "add",
+                            "path": "/paths/%s/%s/parameters/%s/required" % (stack[1].replace('/', '~1'), key, idx),
+                            "value": False
+                        })
+            patch.append({
+                "op": "add",
+                "path": "/paths/%s/%s/security" % (stack[1].replace('/', '~1'), key),
+                "value": [{'Authorization': []}]
+            })
         if len(stack) == 2 and stack[0] == 'components' and stack[1] == 'schemas':
             if 'example' in node:
-                del node['example']
-            if 'properties' in node:
-                for k, v in node['properties'].items():
-                    if v.get('type') == 'object' and v.get('title') is None:
-                        # should have been inlined
-                        json_path = '/%s/%s/properties/%s' % ('/'.join(stack), key, k)
-
-                        print('should be added to the json-patch:' + json.dumps({
-                            'op': 'replace', 'path': json_path,
-                            'value': {'#ref': '$/components/schemas/****'}
-                        }))
+                patch.append({
+                    "op": "remove",
+                    "path": "/components/schemas/%s/example" % key
+                })
         remapped_ref = remap.get(node.get('$ref'))
         if remapped_ref is not None:
-            node['$ref'] = remapped_ref
-        if 'required' in node and isinstance(node['required'], list):
-            if 'id_weboob' in node['required']:
-                node['required'].remove('id_weboob')
+            new_stack = []
+            for s in stack:
+                new_stack.append(s.replace('/', '~1'))
+            new_stack = '/' + '/'.join(new_stack) + '/schema/$ref'
+            patch.append({
+                "op": "add",
+                "path": new_stack,
+                "value": remapped_ref
+            })
 
         return node
 
-    for old, new in remapped_stacks.items():
-        el = openapi
-        for path_el in old:
-            el = el[path_el]
-
-        nested_set(openapi, new, el)
-
-        el = openapi
-        for path_el in old[:-1]:
-            el = el[path_el]
-        del el[old[-1]]
-
     visit_tree([], treat_node, openapi)
 
-    openapi['components']['securitySchemes'] = {
-        'Authorization': {
-            'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization',
+    for old, new in remapped_stacks.items():
+        patch.append({
+            "op": "move",
+            "from": '/' + '/'.join(old),
+            "path": '/' + '/'.join(new)
+        })
+
+    patch.append({
+        "op": "add",
+        "path": "/components/securitySchemes",
+        "value": {
+            'Authorization': {
+                'type': 'apiKey',
+                'in': 'header',
+                'name': 'Authorization',
+            }
         }
-    }
+    })
 
-    openapi['servers'][0]['url'] = 'http:' + openapi['servers'][0]['url']
-
-    return openapi
+    return patch
 
 
 args = parser.parse_args()
 
 with open(args.input, 'r') as input_yaml:
     openapi_content = yaml.load(input_yaml, Loader=yaml.SafeLoader)
-    openapi_content = step_change(openapi_content)
+    patch = step_change(openapi_content)
+    pprint(patch)
+    jp = jsonpatch.JsonPatch(patch)
+    jp.apply(openapi_content, in_place=True)
 
 with open(args.output, 'w') as output_yaml:
     yaml.dump(openapi_content, output_yaml, indent=2)

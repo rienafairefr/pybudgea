@@ -231,6 +231,7 @@
   {"op": "remove", "path":  "/components/schemas/UserCategoriesFull/required"},
   {"op": "remove", "path":  "/components/schemas/UserTerms/required"},
   {"op": "remove", "path":  "/components/schemas/Profile/required/5"},
+  {"op": "remove", "path":  "/components/schemas/ConnectorSource/required/2"},
 
   {"op": "add", "path":  "/components/schemas/Document/properties/date/nullable", "value":  true}
 ]

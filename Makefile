@@ -9,8 +9,8 @@ test:setupto
 clean:
 	rm -rf api
 	rm -f openapi.yaml
-	rm -f openapi_patched.yaml
-	rm -f swagger_patched.json
+	rm -f openapi_*.yaml
+	rm -f swagger_*.json
 
 swagger_00.json: swagger.json
 	pipenv run python patch_json.py -i swagger.json -o swagger_00.json
