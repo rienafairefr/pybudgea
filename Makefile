@@ -21,7 +21,7 @@ openapi_00.yaml: swagger_00.json
 	           -g openapi-yaml -o /local/openapi-yaml
 	cp openapi-yaml/openapi/openapi.yaml openapi_00.yaml
 	rm -rf openapi-yaml
-	cat openapi_.yaml
+	cat openapi_00.yaml
 
 openapi_05.yaml: openapi_00.yaml merge_in_yaml.py merge_in_0.yaml
 	pipenv run python merge_in_yaml.py -i openapi_00.yaml -o openapi_05.yaml -m merge_in_0.yaml
