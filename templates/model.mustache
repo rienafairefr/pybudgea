@@ -164,11 +164,14 @@ class {{classname}}(object):
 
         self.discriminator = {{#discriminator}}'{{{discriminatorName}}}'{{/discriminator}}{{^discriminator}}None{{/discriminator}}
         if self.local_vars_configuration.client_side_validation:
-            validated = {{classname}}Schema().load({
+            validated, errors = {{classname}}Schema().load({
 {{#vars}}
                 '{{name}}': {{name}}{{^-last}},{{/-last}}
 {{/vars}}
             })
+            for key in errors:
+                raise ValueError(f'"{key}" parameter does not pass validation')
+
 {{#vars}}
             self.{{name}} = validated.{{name}}
 {{/vars}}

@@ -1,9 +1,10 @@
-[[source]]
-url = "https://pypi.org/simple"
-verify_ssl = true
-name = "pypi"
+[tool.poetry]
+name = "python budgea"
+version = "0.1.0"
+description = ""
+authors = ["Matthieu Berthomé <matthieu@mmea.fr>"]
 
-[packages]
+[tool.poetry.dev-dependencies]
 certifi = ">=14.05.14"
 python-dateutil = ">=2.5.3"
 urllib3 = ">=1.15.1"
@@ -24,3 +25,7 @@ inflection = "*"
 jsondiff = "*"
 jsonpatch = "*"
 tabulate = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

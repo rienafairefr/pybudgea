@@ -79,3 +79,4 @@ Pipfile.lock
 incoming_push.json
 openapi_*.yaml
 swagger_*.json
+.envrc

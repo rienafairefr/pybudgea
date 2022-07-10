@@ -62,6 +62,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Config'
+  /auth/renew:
+    post:
+      description: |
+        This endpoint generates a new permanent access token for an existing user, and revokes former tokens if explicitly requested.
+        You need to provide your client application credentials (client_id and client_secret) to allow the request.
+      operationId: authRenewPost
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                grant_type:
+                  description: The only accepted value is "client_credentials"
+                  type: string
+                client_id:
+                  description: The ID of the calling client application.
+                  type: string
+                client_secret:
+                  description: The client secret associated with the client ID.
+                  type: string
+                id_user:
+                  description: User for whom the token has to be generated. If not supplied, a user will be created.
+                  type: string
+                revoke_previous:
+                  description: If true, all other permanent tokens for the user will be deleted. The default is false.
+                  type: boolean
+      security:
+        - Authorization: [ ]
+      summary: Generate a new permanent access token for an existing user
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenRenew'
 
 components:
   callbacks:
@@ -73,13 +111,24 @@ components:
             content:
               application/json:
                 schema:
-                  $ref: '#/component/schemas/Push'
+                  $ref: '#/components/schemas/Push'
           responses:
             '200':
               description: |
                 Your server implementation should return this HTTP status code
                 if the data was received successfully
   schemas:
+    AuthTokenRenew:
+      properties:
+        access_token:
+          description: The newly generated permanent token for the requested user.
+          type: string
+        token_type:
+          description: The type of token. The only value is Bearer.
+          type: string
+      required:
+        - access_token
+        - token_type
     ConnectionInformations:
       type: object
       properties:
