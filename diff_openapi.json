@@ -124,7 +124,6 @@
   {"op": "add", "path":  "/components/schemas/Currency/properties/datetime/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Currency/properties/name", "value":  {"type":  "string", "nullable":  true}},
   {"op": "remove", "path":  "/components/schemas/Transaction/required/6"},
-  {"op": "remove", "path":  "/components/schemas/UserTransactionInformations/required/0"},
   {"op": "add", "path":  "/components/schemas/Category/properties/income/nullable", "value":  true},
   {"op": "add", "path":  "/components/schemas/Category/properties/id_parent_category_in_menu", "value":  {"type": "integer","nullable":  true}},
   {"op": "add", "path":  "/components/schemas/Category/properties/id_logo/nullable", "value":  true},

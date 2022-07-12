@@ -1,10 +1,10 @@
 .PHONY: clean
 
-VERSION ?= $(shell pipenv run python -c "from setuptools_scm import get_version;print(get_version())")
-OPENAPIGEN_VERSION ?= v4.2.3
+VERSION ?= $(shell poetry run python -c "from setuptools_scm import get_version;print(get_version())")
+OPENAPIGEN_VERSION ?= v4.3.1
 
 test:setupto
-	pipenv run py.test tests
+	poetry run py.test tests
 
 clean:
 	rm -rf api
@@ -13,7 +13,7 @@ clean:
 	rm -f swagger_*.json
 
 swagger_00.json: swagger.json
-	pipenv run python patch_json.py -i swagger.json -o swagger_00.json
+	poetry run python patch_json.py -i swagger.json -o swagger_00.json
 
 openapi_00.yaml: swagger_00.json
 	docker run --rm --user `id -u`:`id -g` -v ${PWD}:/local openapitools/openapi-generator-cli:${OPENAPIGEN_VERSION} \
@@ -23,22 +23,22 @@ openapi_00.yaml: swagger_00.json
 	rm -rf openapi-yaml
 
 openapi_05.yaml: openapi_00.yaml merge_in_yaml.py merge_in_0.yaml
-	pipenv run python merge_in_yaml.py -i openapi_00.yaml -o openapi_05.yaml -m merge_in_0.yaml
+	poetry run python merge_in_yaml.py -i openapi_00.yaml -o openapi_05.yaml -m merge_in_0.yaml
 
 openapi_06.yaml: openapi_05.yaml patch_yaml.py
-	pipenv run python patch_yaml.py -i openapi_05.yaml -o openapi_06.yaml
+	poetry run python patch_yaml.py -i openapi_05.yaml -o openapi_06.yaml
 
 openapi_10.yaml: openapi_06.yaml merge_in.yaml merge_in_yaml.py
-	pipenv run python merge_in_yaml.py -i openapi_06.yaml -o openapi_10.yaml -m merge_in.yaml
+	poetry run python merge_in_yaml.py -i openapi_06.yaml -o openapi_10.yaml -m merge_in.yaml
 
 openapi_20.yaml: openapi_10.yaml patch_autogen.py
-	pipenv run python patch_autogen.py -i openapi_10.yaml -o openapi_20.yaml
+	poetry run python patch_autogen.py -i openapi_10.yaml -o openapi_20.yaml
 
 openapi.yaml: openapi_20.yaml diff_openapi.json patch_diff_yaml.py
-	pipenv run python patch_diff_yaml.py -i openapi_20.yaml -o openapi.yaml -d diff_openapi.json
+	poetry run python patch_diff_yaml.py -i openapi_20.yaml -o openapi.yaml -d diff_openapi.json
 
 docker_image: $(wildcard generator/**/*) $(wildcard generator/*)
-	docker build -t pybudgea-custom-codegen generator
+	docker build --build-arg OPENAPIGEN_VERSION=${OPENAPIGEN_VERSION} -t pybudgea-custom-codegen generator
 
 clean_api:
 	rm -rf api
