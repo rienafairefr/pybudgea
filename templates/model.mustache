@@ -170,7 +170,7 @@ class {{classname}}(object):
 {{/vars}}
             })
             for key in errors:
-                raise ValueError(f'"{key}" parameter does not pass validation')
+                raise ValueError(key + ' parameter does not pass validation')
 
 {{#vars}}
             self.{{name}} = validated.{{name}}
